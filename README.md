@@ -4,8 +4,10 @@
 <br>
 <br>
 <br>
+scl enable devtoolset-6 bash
 <br>
 <br>
+./ati-install.sh 15.302 --install
 <br>
 <br>
 <br>
