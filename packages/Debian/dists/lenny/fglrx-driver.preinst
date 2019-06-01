@@ -1,0 +1,99 @@
+#!/bin/sh
+
+set -e
+
+# summary of how this script can be called:
+#        * <new-preinst> `install'
+#        * <new-preinst> `install' <old-version>
+#        * <new-preinst> `upgrade' <old-version>
+#        * <old-preinst> `abort-upgrade' <new-version>
+#
+# For details see /usr/share/doc/packaging-manual/
+
+# usage: divert_libGL DIR [OLDFILE]
+# if OLDFILE is not empty, fixes an old diversion
+divert_libGL ()
+{
+    if [ "$2" ]; then
+        # move our libGL out of the way for a while
+        mv "$1/libGL.so.1.2" "$1/fglrx-libGL.so.1.2"
+
+        # remove the old diversion
+        dpkg-divert --remove --package fglrx-driver \
+            --divert "$2" \
+            --rename "$1/libGL.so.1.2"
+    fi
+
+    if [ ! -d "$1/fglrx/diversions" ]; then
+        mkdir -p "$1/fglrx/diversions"
+    fi
+
+    # divert the real library first to make sure that a ldconfig run
+    # between the two dpkg-divert calls doesn't recreate the link
+    dpkg-divert --add --package fglrx-driver \
+        --divert "$1/fglrx/diversions/libGL.so.1.2" \
+        --rename "$1/libGL.so.1.2"
+    dpkg-divert --add --package fglrx-driver \
+        --divert "$1/fglrx/diversions/libGL.so.1" \
+        --rename "$1/libGL.so.1"
+
+    if [ "$2" ]; then
+        # move our libGL back in its place
+        mv "$1/fglrx-libGL.so.1.2" "$1/libGL.so.1.2"
+    fi
+}
+
+# usage: divert_libdri DIR
+divert_libdri ()
+{
+    if [ ! -d "$1/fglrx/diversions" ]; then
+        mkdir -p "$1/fglrx/diversions"
+    fi
+
+	dpkg-divert --add --package fglrx-driver \
+        --divert "$1/fglrx/diversions/libdri.so" \
+        --rename "$1/xorg/modules/extensions/libdri.so"
+}
+
+# usage: fix_diversions <new-version>
+fix_diversions ()
+{
+    if dpkg --compare-versions "$1" lt "8.24.8"; then
+        # fix old diversion
+        divert_libGL /usr/lib \
+            /usr/share/fglrx/diversions/libGL.so.1.2
+
+        if [ "$(dpkg --print-architecture)" = "amd64" ]; then
+            divert_libGL /emul/ia32-linux/usr/lib \
+                /usr/share/fglrx/diversions/libGL.so.1.2_32bit
+        fi
+
+        rmdir /usr/share/fglrx/diversions || true
+        rmdir /usr/share/fglrx            || true
+    fi
+}
+
+case "$1" in
+    install|upgrade)
+
+        fix_diversions "$2"
+
+        divert_libGL /usr/lib
+        if [ "$(dpkg --print-architecture)" = "amd64" ]; then
+            divert_libGL /emul/ia32-linux/usr/lib
+        fi
+
+        divert_libdri /usr/lib
+    ;;
+
+    abort-upgrade)
+    ;;
+
+    *)
+        echo "preinst called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+#DEBHELPER#
+

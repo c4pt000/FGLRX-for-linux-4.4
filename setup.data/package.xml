@@ -1,0 +1,261 @@
+<?xml version="1.0" standalone="yes"?>
+<install 
+	desc="AMD  Proprietary Driver 15.302" 
+	nobinaries="yes" 
+	version="15.302" 
+	nouninstall="yes" 
+	splash="atilogo.xpm" 
+	path="" 
+	nopromptoverwrite="yes" 
+	localurl="/usr/share/ati/fglrx-install.log">
+
+  <eula keepdirs="yes">usr/share/ati/LICENSE.TXT</eula>
+
+  <require command="sh detect_requirements_package.sh">
+  Please install pre-requisites before 
+  proceeding with AMD Proprietary Driver Package Generation.
+  Please check file /usr/share/ati/fglrx-install.log for more details.
+  </require>    
+ 
+  <post_install_msg command=". ./verify_install.sh">
+	There were errors during package generation.  Details can be found in /usr/share/ati/fglrx-install.log
+  </post_install_msg>
+
+  <exclusive>Package Generation
+    <option install="false">
+      RedHat Packages
+      <option install="false">
+        RedHat/RHEL5_64a
+        <script message="Generating package RedHat/RHEL5_64a">sh ati-packager-wrapper.sh RedHat/RHEL5_64a</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        RedHat/RHEL6_64a
+        <script message="Generating package RedHat/RHEL6_64a">sh ati-packager-wrapper.sh RedHat/RHEL6_64a</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        RedHat/RHEL7_64a
+        <script message="Generating package RedHat/RHEL7_64a">sh ati-packager-wrapper.sh RedHat/RHEL7_64a</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        RedHat/RHEL5
+        <script message="Generating package RedHat/RHEL5">sh ati-packager-wrapper.sh RedHat/RHEL5</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        RedHat/RHEL6
+        <script message="Generating package RedHat/RHEL6">sh ati-packager-wrapper.sh RedHat/RHEL6</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        RedHat/RHEL7
+        <script message="Generating package RedHat/RHEL7">sh ati-packager-wrapper.sh RedHat/RHEL7</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+    </option>
+    <option install="false">
+      SuSE Packages
+      <option install="false">
+        SuSE/SLE10-IA32
+        <script message="Generating package SuSE/SLE10-IA32">sh ati-packager-wrapper.sh SuSE/SLE10-IA32</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SLE10-AMD64
+        <script message="Generating package SuSE/SLE10-AMD64">sh ati-packager-wrapper.sh SuSE/SLE10-AMD64</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SLE11-IA32
+        <script message="Generating package SuSE/SLE11-IA32">sh ati-packager-wrapper.sh SuSE/SLE11-IA32</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SLE11-AMD64
+        <script message="Generating package SuSE/SLE11-AMD64">sh ati-packager-wrapper.sh SuSE/SLE11-AMD64</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SLE12-AMD64
+        <script message="Generating package SuSE/SLE12-AMD64">sh ati-packager-wrapper.sh SuSE/SLE12-AMD64</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE121-IA32
+        <script message="Generating package SuSE/SUSE121-IA32">sh ati-packager-wrapper.sh SuSE/SUSE121-IA32</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE121-AMD64
+        <script message="Generating package SuSE/SUSE121-AMD64">sh ati-packager-wrapper.sh SuSE/SUSE121-AMD64</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE122-IA32
+        <script message="Generating package SuSE/SUSE122-IA32">sh ati-packager-wrapper.sh SuSE/SUSE122-IA32</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE122-AMD64
+        <script message="Generating package SuSE/SUSE122-AMD64">sh ati-packager-wrapper.sh SuSE/SUSE122-AMD64</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE123-IA32
+        <script message="Generating package SuSE/SUSE123-IA32">sh ati-packager-wrapper.sh SuSE/SUSE123-IA32</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE123-AMD64
+        <script message="Generating package SuSE/SUSE123-AMD64">sh ati-packager-wrapper.sh SuSE/SUSE123-AMD64</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE131-IA32
+        <script message="Generating package SuSE/SUSE131-IA32">sh ati-packager-wrapper.sh SuSE/SUSE131-IA32</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE131-AMD64
+        <script message="Generating package SuSE/SUSE131-AMD64">sh ati-packager-wrapper.sh SuSE/SUSE131-AMD64</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE132-IA32
+        <script message="Generating package SuSE/SUSE132-IA32">sh ati-packager-wrapper.sh SuSE/SUSE132-IA32</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE132-AMD64
+        <script message="Generating package SuSE/SUSE132-AMD64">sh ati-packager-wrapper.sh SuSE/SUSE132-AMD64</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+      <option install="false">
+        SuSE/SUSE-autodetection
+        <script message="Generating package SuSE/SUSE-autodetection">sh ati-packager-wrapper.sh SuSE/SUSE-autodetection</script>
+        <!-- 
+          For the Loki installer, there has to be a file specified for a selected option to be installable
+	      For now, a dummy AMD_LICENSE.TXT file is specified, to make the Loki "install" button clickable
+        -->
+        <files path="usr/share/ati/">LICENSE.TXT</files>
+      </option>
+    </option>
+    <option install="false">
+        Packages for other distributions
+        <!-- 
+          The WARN tag causes a pop-up message to be displayed whenever the
+          "Packages for other distributions" option is selected, containing the
+          text within the start and end tags.  Since the "Packages for other
+          distributions" option is a top-level option (like "RedHat" or "SuSE"),
+          it is not a valid install target on its own (valid install targets
+          include RedHat/RHEL3, which is a sub-option of RedHat).  Since it is
+          not a valid install target, the "Continue" button will be grayed out
+          when "Packages for other distributions" is selected so the user
+          cannot proceed using that option.  To sum up, when "Packages for
+          other distributions" is displayed, the following message will appear
+          in a pop-up and the user must either select another distribution for
+          which to generate a package or the user must exit the installer.
+
+          NOTE: In the Ncurses GUI, the message is truncated after
+          "...generatable packages."  The user should still be able to figure
+          out that they need to use [dash][dash]buildpkg from the output of
+          [dash][dash]listpkg so this issue is minor.  In the Gnome GUI, the
+          message is not truncated.
+        -->
+        <warn>
+          To generate packages for distributions other than RedHat and SuSE,
+          restart the installer from the command line with the --listpkg option
+          (ie. "./amd-driver-installer-&lt;version&gt;-&lt;architecture&gt;.run
+          --listpkg") to view the complete list of generatable packages.
+          Then use the --buildpkg option to build a package from the list.
+          The --listpkg option provides instructions for using --buildpkg.
+        </warn>
+    </option>
+  </exclusive>
+</install>

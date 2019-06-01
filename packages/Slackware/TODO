@@ -1,0 +1,9 @@
+*) Le nuove API chiedono di verificare anche la presenza di (vedi README.distro sezione 4f):
+   - libstdc++
+   - libgcc
+   - fontconfig
+   - freetype
+   - zlib
+   - gcc
+   - mesa-libGL
+   durante la fase di installprep. Si è scelto per ora di ignorare questa richiesta.

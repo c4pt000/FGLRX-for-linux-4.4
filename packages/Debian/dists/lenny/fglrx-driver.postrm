@@ -1,0 +1,123 @@
+#!/bin/sh
+
+set -e
+
+# summary of how this script can be called:
+#        * <postrm> `remove'
+#        * <postrm> `purge'
+#        * <old-postrm> `upgrade' <new-version>
+#        * <new-postrm> `failed-upgrade' <old-version>
+#        * <new-postrm> `abort-install'
+#        * <new-postrm> `abort-install' <old-version>
+#        * <new-postrm> `abort-upgrade' <old-version>
+#        * <disappearer's-postrm> `disappear' <r>overwrit>r> <new-version>
+# for details, see /usr/share/doc/packaging-manual/
+
+# usage: undivert_libGL DIR
+undivert_libGL ()
+{
+    # put back the link first to make sure that a ldconfig run
+    # between the two dpkg-divert calls doesn't create a new link
+    # that would then conflict with the one we're restoring
+    dpkg-divert --remove --package fglrx-driver \
+        --divert "$1/fglrx/diversions/libGL.so.1" \
+        --rename "$1/libGL.so.1"
+    dpkg-divert --remove --package fglrx-driver \
+        --divert "$1/fglrx/diversions/libGL.so.1.2" \
+        --rename "$1/libGL.so.1.2"
+
+    if [ -d "$1/fglrx/diversions" ]; then
+        rmdir "$1/fglrx/diversions" || true
+        rmdir "$1/fglrx"            || true
+    fi
+}
+
+# usage: undivert_libdri DIR
+undivert_libdri ()
+{
+	dpkg-divert --remove --package fglrx-driver \
+        --divert "$1/fglrx/diversions/libdri.so" \
+        --rename "$1/xorg/modules/extensions/libdri.so"
+
+    if [ -d "$1/fglrx/diversions" ]; then
+        rmdir "$1/fglrx/diversions" || true
+        rmdir "$1/fglrx"            || true
+    fi
+}
+
+# usage: restore_old_diversion DIR OLDFILE
+restore_old_diversion ()
+{
+    # we might have added the new diversions: remove them
+    if dpkg-divert --list "$1/fglrx/diversions/libGL.so.1" | grep -q '\<fglrx-driver$'; then
+        test -h "$1/libGL.so.1" && mv "$1/libGL.so.1" "$1/fglrx-libGL.so.1"
+        dpkg-divert --remove --package fglrx-driver \
+            --divert "$1/fglrx/diversions/libGL.so.1" \
+            --rename "$1/libGL.so.1"
+    fi
+    if dpkg-divert --list "$1/fglrx/diversions/libGL.so.1.2" | grep -q '\<fglrx-driver$'; then
+        test -f "$1/libGL.so.1.2" && mv "$1/libGL.so.1.2" "$1/fglrx-libGL.so.1.2"
+        dpkg-divert --remove --package fglrx-driver \
+            --divert "$1/fglrx/diversions/libGL.so.1.2" \
+            --rename "$1/libGL.so.1.2"
+    fi
+
+    # we might have created "$1/fglrx/diversions": remove it
+    if [ -d "$1/fglrx/diversions" ]; then
+        rmdir "$1/fglrx/diversions" || true
+        rmdir "$1/fglrx"            || true
+    fi
+
+    # we might have removed the old diversion: restore it
+    if ! (dpkg-divert --list "$2" | grep -q '\<fglrx-driver$'); then
+        mkdir -p "$(dirname $2)"
+        dpkg-divert --add --package fglrx-driver \
+            --divert "$2" \
+            --rename "$1/libGL.so.1.2"
+    fi
+
+    # we might have moved our libGL to a temporary name: put it back
+    test -f "$1/fglrx-libGL.so.1.2" && mv "$1/fglrx-libGL.so.1.2" "$1/libGL.so.1.2"
+    test -h "$1/fglrx-libGL.so.1"   && rm "$1/fglrx-libGL.so.1"
+}
+
+# usage: fix_diversions <new-version>
+fix_diversions ()
+{
+    if dpkg --compare-versions "$1" lt "8.24.8"; then
+        restore_old_diversion /usr/lib \
+            /usr/share/fglrx/diversions/libGL.so.1.2
+
+        if [ "$(dpkg --print-architecture)" = "amd64" ]; then
+            restore_old_diversion /emul/ia32-linux/usr/lib \
+                /usr/share/fglrx/diversions/libGL.so.1.2_32bit
+        fi
+    fi
+}
+
+
+case "$1" in
+    remove|abort-install|purge)
+        undivert_libGL /usr/lib
+        if [ "$(dpkg --print-architecture)" = "amd64" ]; then
+            undivert_libGL /emul/ia32-linux/usr/lib
+        fi
+
+        undivert_libdri /usr/lib
+    ;;
+
+    upgrade|abort-upgrade)
+        fix_diversions "$2"
+    ;;
+
+    failed-upgrade|disappear)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+#DEBHELPER#
+

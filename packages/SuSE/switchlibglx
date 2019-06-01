@@ -1,0 +1,138 @@
+#!/bin/sh
+#
+# Copyright (c) 2010-2014 Sebastian Siebert (freespacer@gmx.de)
+# All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+
+# Set local language always to C
+export LC_ALL=C
+export LANG=C
+
+if [ "$(whoami)" != "root" ]; then
+    echo "Must be root to run this script." 1>&2
+    exit 1
+fi
+
+if [ $# -ge 2 ]; then
+    echo "Usage: $(basename $0) <amd|intel|query>" 1>&2
+    echo "Please choose one parameter" 1>&2
+    exit 1
+fi
+
+ARCH=`uname -m`
+case "${ARCH}" in
+    i?86)
+        LIB="lib"
+    ;;
+    x86_64)
+        LIB="lib64"
+    ;;
+esac
+
+SUSE_NAME=`lsb-release -d | cut -f2 | cut -f1 -d" "`
+SUSE_VERSION=`lsb-release -r | cut -f2`
+
+if [ "${SUSE_NAME}" != "openSUSE" ]; then
+    SUSE_NAME="SLE"
+fi
+
+# SLE 10
+if [ "${SUSE_NAME}" = "SLE" -a "${SUSE_VERSION}" = "10" ]; then
+    MODULES="/usr/X11R6/${LIB}/modules"
+else
+    MODULES="/usr/${LIB}/xorg/modules"
+fi
+
+function switch_to_amd() {
+
+    if [ -L /etc/alternatives/libglx.so ]; then
+        /usr/sbin/update-alternatives \
+          --set libglx.so ${MODULES}/extensions/fglrx/fglrx-libglx.so
+    else
+	ln -snf ${MODULES}/updates/extensions/fglrx/fglrx-libglx.so \
+	        ${MODULES}/updates/extensions/libglx.so
+    fi
+
+}
+
+function switch_to_intel() {
+
+    if [ -L /etc/alternatives/libglx.so ]; then
+        /usr/sbin/update-alternatives \
+          --set libglx.so ${MODULES}/extensions/xorg/xorg-libglx.so
+    else
+	ln -snf ${MODULES}/extensions/libglx.so \
+	        ${MODULES}/updates/extensions/libglx.so
+    fi
+
+}
+
+function get_current_driver() {
+
+    if [ -L /etc/alternatives/libglx.so ]; then
+        LIB_LINK="`readlink /etc/alternatives/libglx.so 2>/dev/null`"
+        if [ "${LIB_LINK}" = "${MODULES}/extensions/fglrx/fglrx-libglx.so" ]; then
+            echo "amd"
+        elif [ "${LIB_LINK}" = "fglrx/fglrx-libglx.so" ]; then
+            echo "amd"
+        elif [ "${LIB_LINK}" = "${MODULES}/extensions/xorg/xorg-libglx.so" ]; then
+            echo "intel"
+        elif [ "${LIB_LINK}" = "xorg/xorg-libglx.so" ]; then
+            echo "intel"
+        else
+            echo "unknown"
+        fi
+    else
+        LIB_LINK="`readlink ${MODULES}/updates/extensions/libglx.so 2>/dev/null`"
+        if [ "${LIB_LINK}" = "${MODULES}/updates/extensions/fglrx/fglrx-libglx.so" ]; then
+            echo "amd"
+        elif [ "${LIB_LINK}" = "fglrx/fglrx-libglx.so" ]; then
+            echo "amd"
+        elif [ "${LIB_LINK}" = "${MODULES}/extensions/libglx.so" ]; then
+            echo "intel"
+        else
+            echo "unknown"
+        fi
+    fi
+
+}
+
+case "$1" in
+    amd)
+        echo "Switch to AMD" 1>&2
+        switch_to_amd
+    ;;
+    intel)
+        echo "Switch to Intel" 1>&2
+        switch_to_intel
+    ;;
+    query)
+        get_current_driver
+    ;;
+    *)
+        echo "Usage: $(basename $0) <amd|intel|query>" 1>&2
+        exit 1
+    ;;
+esac
+
+exit 0

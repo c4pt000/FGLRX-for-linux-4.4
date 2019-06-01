@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -e
+
+cleanup_init() {
+	update-rc.d -f atieventsd remove
+	update-rc.d atieventsd defaults 31
+}
+
+case "$1" in
+        configure)
+		[ -L /etc/rc5.d/S20atieventsd ] && cleanup_init
+
+		#check whether libglx.so got installed.  some releases earlier than x740
+		#will not actually have this libglx.so
+		if [ ! -f /usr/lib/xorg/modules/extensions/libglx.so ]; then
+			dpkg-divert --remove --rename --package xorg-driver-fglrx --divert /usr/lib/fglrx/libglx.so.xlibmesa /usr/lib/xorg/modules/extensions/libglx.so > /dev/null
+		fi
+
+esac
+
+if [ "$1" = "configure" ]; then
+	ldconfig
+fi
+
+#DEBHELPER#

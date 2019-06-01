@@ -1,0 +1,5 @@
+debian/overrides/xorg-driver-fglrx-dev                  usr/share/lintian/overrides
+
+usr/include/*                               usr/include
+
+arch/#ARCH#/usr/X11R6/#LIBDIR#/*.a          usr/lib

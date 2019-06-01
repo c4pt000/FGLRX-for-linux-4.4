@@ -1,0 +1,188 @@
+2008-09-22  Aric Cyr <Aric.Cyr@gmail.com>
+
+	* dists/*/fglrx-driver.{preinst,postrm}
+	- Fixed diversion of libdri.so for upgrade case from APT fglrx-driver
+
+	* ati-package.sh
+	- remove Sarge support due to lack of XFree86 4.3.0 support upstream
+
+2008-09-17  Aric Cyr <Aric.Cyr@gmail.com>
+
+	* dists/*/fglrx-driver.{preinst,postrm}
+	- Added diversion of libdri.so required by latest driver
+
+	* dists/*/rules
+	- Added extensions directory to package
+
+2008-02-08  Mario Limonciello <superm1@uubntu.com>
+
+       * dists/lenny/rules
+       - Like the Ubuntu build, make the symlinks earlier.
+
+2008-01-22  Mario Limonciello <superm1@ubuntu.com>
+
+       * dists/lenny/rules
+       - Temporarily create symlinks with ldconfig before building debs
+
+2007-07-02  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* dists/*/rules
+	- make sure all apps have correct executable permissions
+
+2007-05-02  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* dists/lenny
+	- added new lenny/testing dist verions, and bumped other versions
+	* dists/*/rules
+	- fixed generation of fglrx-amdcccle package to include the
+	control panel
+
+2007-04-02  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* dists
+	- added new glesx.so and esut.a files to xorg/modules
+
+2007-02-21  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* rules, control
+	- replaced fireglcontrol with new amdcccle
+	- removed fglrx-sources package since we won't ship the old
+	control panel anymore
+
+2006-11-24  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* dists/woody
+	- removed.  Woody can longer be supported by the installer due
+	to use of XFree86 4.1 which is no longer preset
+
+2006-11-23  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* overlay
+	- renamed overlay/ to dists/ and made a separate subdirectory for
+	each distribution version.
+	* ati-installer.sh
+	- made more POSIX compliant
+	- disabled warty target since XF86 4.1 is no longer supported
+
+2006-09-04  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* rules
+	- changed to using tar's native bzip2 option instead of piping
+	through bzip2.
+
+	* overlay/experimental/control
+	* overlay/sid/control
+	* overlay/etch/control
+	- changed driver dependency to xserver-xorg-core instead of 
+	xserver-xorg.
+	
+2006-08-16  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* overlay/experimental
+	- added Xorg 7.1 support and Debian/experimental target
+	- fixed fglrx-control package (was improperly set to
+	  fglrx-control-q3)
+	- added a work-around for fireglcontrolpanel on x710 targets
+
+2006-08-11  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* overlay/sid/70fglrx
+	* overlay/etch/70fglrx
+	- fixed 70fglrx Xsession script to always set LIBGL_DRIVERS_PATH
+
+	* debian/driver.atieventsd.init
+	- fixed call to start-stop-daemon
+
+2006-06-04  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* atieventsd
+	- new init.d script, man page and the daemon installation
+	* preinst, postrm
+	- removed some bad diverts
+	* fglrx-powermode.sh
+	- fixed for latest aticonfig
+	
+2006-05-14  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* ati-package.sg
+	- make the package directory writeable so copying overlay works
+	better
+
+	* module/postinst
+	- remove the depmod -a from the kernel module postinst scripts as
+	it is done automatically by debhelper and works better
+
+	* debian/control
+	- removed version dependency on Debian fglrx-driver-dev package as
+	it was preventing installation.  Still depends on fglrx-driver
+	though.
+
+2006-05-10  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* ati-package.sh
+	- force umask 002
+	- use -f when copying files
+
+	* overlay/sid/rules
+	- set XVERSION and XVERSIONMAX to 1:7.0.0 and 1:7.0.99 resp.
+	- fix xorg modules path (forgot the xorg/ part)
+
+2006-04-16  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* debian/*
+	* ati-packager.sh
+	- separated debian directory into version specific ones for easier
+	backwards compatibility maintenance.
+	- use mktemp to generate a unique working directory
+
+	* common/*
+	- moved version agnostic files (/etc stuff) to common
+
+	* version/sid/rules
+	- changed redirection of libGL files
+	- changes DRI module location to /usr/lib/dri
+	- fix amd64 package build
+	
+2006-04-15  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* debian/control
+	* debian/rules
+	* debian/fglrx-driver.*
+	- updated to more closely follow the official Debian packages
+
+2006-03-18  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* debian/fglrx.default
+	- New default config file
+
+	* debian/fglrx-powermode.sh
+	* debian/fglrx-lid-aticonfig
+	* debian/fglrx-ac-aticonfig
+	- New ACPI scripts to automaticaly call aticonfig and set low
+	power mode or revert to default depending on lid and AC
+	state. Thanks to Matthew Tippett for the original scripts and
+	idea.
+	- Source /etc/default/fglrx to allow easy disabling of the
+	powerstate switching code
+
+	* debian/rules
+	- Added above ACPI related files to the xorg-driver-fglrx package.
+	- Changed bin directory fro /usr/X11R6 to /usr/bin to match Debian
+	official repository
+	- Added fglrxprofiles.csv and fglrxrc to be installed to /etc
+	- Added fglrx.default file to be installed to /etc/default
+
+
+2006-03-12  Aric Cyr  <Aric.Cyr@gmail.com>
+
+	* debian/rules
+	* debian/copyright
+	- Updated copyright year.
+
+	* debian/README.Debian
+	- Removed unnecessary information
+	
+	* ati-packager.sh
+	- Force the current locale to C for so that packages will be
+	located in the corrent directory after being built, and not lost
+	in /tmp.  Thanks to KanoTheMaster at Rage3d for the tip.

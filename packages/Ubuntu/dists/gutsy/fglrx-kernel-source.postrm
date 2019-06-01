@@ -1,0 +1,17 @@
+#!/bin/sh
+# Copyright (C) 2009 Mario Limonciello
+
+BLACKLIST_FILE=/etc/modprobe.d/blacklist-fglrx.conf
+
+case "$1" in
+	remove|purge)
+		# Remove blacklist file
+		rm -f $BLACKLIST_FILE
+
+		# Update initramfs, in case we were loaded into it
+		/usr/sbin/update-initramfs -u
+		;;
+esac
+
+#DEBHELPER#
+

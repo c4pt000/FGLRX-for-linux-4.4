@@ -1,0 +1,60 @@
+Source: fglrx-installer
+Section: non-free/x11
+Priority: extra
+Maintainer: Aric Cyr <Aric.Cyr@gmail.com>
+Build-Depends: debhelper (>= 4.2.11), wget, rpm, bzip2, xserver-xfree86 | xserver-xorg, x-dev, ia32-libs [amd64], libstdc++5
+Standards-Version: 3.6.1
+
+Package: fglrx-driver
+Architecture: amd64 i386
+Depends: ${shlibs:Depends}, xserver-xorg-core
+Recommends: fglrx-kernel
+Conflicts: nvidia-glx
+Description: Video driver for the ATI graphics accelerators
+ Video driver for the ATI Radeon and FireGL graphics accelerators.
+ .
+ This version of the ATI driver officially supports:
+  * RADEON X1300, X1600, X1800, X1900
+  * RADEON 8500, 9000, 9100, 9200, 9500, 9550, 9600, 9700, 9800
+  * RADEON X800, X700, X600, X300 series (AGP and PCI Express)
+  * MOBILITY RADEON 9000, 9200, 9600, 9800, X700
+  * MOBILITY RADEON 9000/9100 IGP Series
+  * FireGL 8700, 8800, E1, E2, X1, X2, X3, Z1, T2
+  * MOBILITY FireGL 9100, T2
+ .
+ Caution: This software driver provides only 2D support for the
+ ATI RADEON 9100 IGP and ATI RADEON 9100 PRO IGP.
+ .
+ This package provides 2D display drivers
+ and hardware accelerated OpenGL for ${XTYPE} ${XVERSION}.
+
+Package: fglrx-driver-dev
+Section: non-free/devel
+Architecture: amd64 i386
+Depends: fglrx-driver
+Description: Video driver for the ATI graphics accelerators (devel files)
+ Video driver for the ATI Radeon and FireGL graphics accelerators.
+ .
+ This package provides definitions for the GL and GLX extensions
+ and the FGLRXGAMMA extension interface library.
+
+Package: fglrx-kernel-src
+Architecture: amd64 i386
+Depends: debconf, debhelper (>= 4.2.11), make, bzip2
+Recommends: module-assistant | kernel-package
+Suggests: fglrx-driver
+Description: Kernel module source for the ATI graphics accelerators
+ Video driver for the ATI Radeon and FireGL graphics accelerators.
+ .
+ This package provides the kernel module build environment.
+
+Package: fglrx-amdcccle
+Architecture: amd64 i386
+Depends: ${shlibs:Depends}, ia32-libs [amd64]
+Conflicts: fglrx-control-qt2, fglrx-control
+Replaces: fglrx-control-qt2, fglrx-control
+Description: Catalyst Control Center for the ATI graphics accelerators
+ Catalyst Control Center for the ATI Radeon and FireGL graphics accelerators.
+ .
+ This package provides the Catalyst Control Center, Linux Edition
+

@@ -1,0 +1,32 @@
+debian/overrides/xorg-driver-fglrx             usr/share/lintian/overrides
+debian/acpi/fglrx-*-aticonfig                  etc/acpi/events
+debian/acpi/fglrx-powermode.sh                 etc/acpi
+debian/10fglrx                                 etc/X11/Xsession.d
+etc/ati                                        etc
+debian/replacements/authatieventsd.sh          etc/ati
+arch/x86/etc/OpenCL/vendors/*.icd              etc/OpenCL/vendors
+arch/x86_64/etc/OpenCL/vendors/*.icd           etc/OpenCL/vendors
+
+
+#binaries
+arch/#ARCH#/usr/bin/*                          usr/bin
+arch/#ARCH#/usr/sbin/*                         usr/sbin
+arch/#ARCH#/usr/X11R6/bin/ati*                 usr/bin
+arch/#ARCH#/usr/X11R6/bin/fgl*                 usr/bin
+usr/sbin/*sh                                   usr/share/fglrx
+
+#DRI stuff
+arch/#ARCH#/usr/X11R6/#LIBDIR#/liba*.so*       usr/lib
+arch/#ARCH#/usr/X11R6/#LIBDIR#/libf*.so*       usr/lib
+arch/#ARCH#/usr/X11R6/#LIBDIR#/libX*.so*       usr/lib
+arch/#ARCH#/usr/X11R6/#LIBDIR#/fglrx/*libGL.so* usr/lib
+arch/#ARCH#/usr/X11R6/#LIBDIR#/modules/dri     #DRIDIR#
+
+#Xorg stuff
+#XARCH#/usr/X11R6/#LIBDIR#/modules/*.so        #XMODDIR#
+#XARCH#/usr/X11R6/#LIBDIR#/modules/drivers     #XMODDIR#
+#XARCH#/usr/X11R6/#LIBDIR#/modules/linux       #XMODDIR#
+#XARCH#/usr/X11R6/#LIBDIR#/modules/extensions  #XMODDIR#
+
+#CAL stuff
+arch/#ARCH#/usr/#LIBDIR#/*                     usr/lib

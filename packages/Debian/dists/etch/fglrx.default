@@ -1,0 +1,4 @@
+
+# Uncomment the next line to enable powerstate switching on ACPI
+# events for lid open/close and AC adapter on/off
+#FGLRX_ACPI_SWITCH_POWERSTATES=true

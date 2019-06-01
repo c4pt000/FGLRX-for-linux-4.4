@@ -1,0 +1,66 @@
+ATI fglrx driver configuration (including 3D support)
+-----------------------------------------------------
+
+Switch to runlevel 3 ("init 3") and use the following command as user
+"root" to configure the ATI fglrx driver (including 3D support).
+
+   sax2 -r -m 0=fglrx
+
+There's no need to try to enable 3D support via SaX2. It's already
+enabled automatically when SaX2 is starting.
+
+Known Issues:
+ - driver only supports 24bit color depth
+ - enabling of 3D support through SaX2 does not work (see above)
+
+
+Using ATI GL library / GLX 1.3 API
+----------------------------------
+
+Some OpenGL applications might already require OpenGL extensions,
+which are only available in the GLX 1.3 API, whereas the standard
+OpenGL library only provides the GLX 1.2 API. Therefore ATI provides
+an OpenGL library, which adds some of the GLX 1.3 extensions. If you
+want to make use of this library with a program called "foobar", just
+do the following:
+
+  IA32:
+
+    LD_LIBRARY_PATH=/usr/lib/fglrx/lib:$LD_LIBRARY_PATH foobar 
+
+  AMD64:
+
+    LD_LIBRARY_PATH=/usr/lib64/fglrx/lib:/usr/lib/fglrx/lib:$LD_LIBRARY_PATH foobar
+
+
+Update on ATI GL library
+------------------------
+
+Since release 8.08/8.8.25 the ATI driver no longer works together 
+(hardware accelerated) with the standard OpenGL library. Therefore
+LD_LIBRARY_PATH is now set to
+
+  /usr/lib/fglrx/lib:$LD_LIBRARY_PATH (IA32)
+  /usr/lib64/fglrx/lib:/usr/lib/fglrx/lib:$LD_LIBRARY_PATH (AMD64)
+
+by default (by specifying this in /etc/profile.d/fglrx.{sh,csh}).
+
+Unfortunately the use of LD_LIBRARY_PATH does not work for
+setuid/setgid binaries (e.g. chromium/trackballs) because of obvious
+security reasons. If you rely on such programs you might consider to
+add "/usr/lib/fglrx/lib" (and "/usr/lib64/fglrx/lib" on AMD64) to 
+your /etc/ld.so.conf and call "ldconfig" right after this. Make sure 
+you insert it before /usr/lib and /usr/lib64 on AMD64.
+
+Update on ATI GL library (2)
+----------------------------
+Using LD_LIBRARY_PATH is no longer required since the ATI GL library 
+is now installed into /usr/X11R6/lib (and /usr/X11R6/lib64 on x86_64),
+which is preferred over Mesa's libGL in /usr/lib (and /usr/lib64 on
+x86_64).
+
+License Terms and Conditions
+----------------------------
+
+See /usr/share/doc/fglrx/LICENSE.TXT.
+

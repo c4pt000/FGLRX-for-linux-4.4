@@ -1,0 +1,4 @@
+libGL           1 xlibmesa-gl | libgl1
+libfglrx_dm     1 fglrx-driver
+libfglrx_gamma  1 fglrx-driver
+libfglrx_pp     1 fglrx-driver

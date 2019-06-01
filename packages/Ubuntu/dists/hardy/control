@@ -1,0 +1,84 @@
+Source: fglrx-installer
+Section: restricted/misc
+Priority: extra
+Maintainer: Mario Limonciello <superm1@ubuntu.com>
+Uploaders: Mario Limonciello <superm1@ubuntu.com>, Aric Cyr <Aric.Cyr@gmail.com>
+Build-Depends: debhelper (>= 5),
+               cdbs,
+               libxext6, 
+               libxrandr2, 
+               libice6, 
+               libsm6, 
+               libfontconfig1, 
+               libxi6, 
+               libxcursor1, 
+               fakeroot, 
+               libdrm2,
+               libgl1-mesa-glx,
+               libxinerama1
+Standards-Version: 3.8.0
+Homepage: http://support.amd.com
+
+Package: xorg-driver-fglrx
+Architecture: amd64 i386
+Recommends: fglrx-amdcccle
+Suggests: libamdxvba1
+Depends: ${shlibs:Depends}, xserver-xorg-core, fglrx-kernel-source, lib32gcc1 [amd64], libc6-i386 [amd64]
+Conflicts: fglrx-driver, xfree86-driver-fglrx, nvidia-glx, nvidia-glx-legacy, nvidia-glx-new, nvidia-glx-71, nvidia-glx-96, nvidia-glx-173, nvidia-glx-177, nvidia-glx-180
+Replaces: fglrx-driver, xfree86-driver-fglrx
+Description: Video driver for the AMD graphics accelerators
+ Video driver for the AMD Radeon and FireGL graphics accelerators.
+ .
+ This package provides 2D display drivers
+ and hardware accelerated OpenGL.
+
+Package: xorg-driver-fglrx-dev
+Architecture: amd64 i386
+Depends: xorg-driver-fglrx
+Conflicts: fglrx-driver-dev, xfree86-driver-fglrx-dev
+Replaces: fglrx-driver-dev, xfree86-driver-fglrx-dev
+Description: Video driver for the AMD graphics accelerators (devel files)
+ Video driver for the AMD Radeon and FireGL graphics accelerators.
+ .
+ This package provides definitions for the GL and GLX extensions.
+
+Package: fglrx-kernel-source
+Architecture: amd64 i386
+Depends: make, dkms, linux-libc-dev, linux-headers-generic | linux-headers
+Suggests: xorg-driver-fglrx
+Conflicts: pentium-builder
+Description: Kernel module source for the AMD graphics accelerators
+ Video driver for the AMD Radeon and FireGL graphics accelerators.
+ .
+ This package provides the kernel module build environment.
+
+Package: fglrx-amdcccle
+Architecture: amd64 i386
+Depends: xorg-driver-fglrx, ${shlibs:Depends}
+Conflicts: fglrx-control-qt2, fglrx-control
+Replaces: fglrx-control
+Description: Catalyst Control Center for the AMD graphics accelerators
+ Catalyst Control Center for the AMD Radeon and FireGL graphics accelerators.
+ .
+ This package provides the Catalyst Control Center, Linux Edition
+
+Package: fglrx-modaliases
+Section: admin
+Architecture: amd64 i386
+Description: Identifiers supported by the AMD graphics driver
+ In order to identify what hardware is supported by Jockey,
+ there must be a static list of what the current driver in the Ubuntu
+ archive supports.
+ .
+ This package provides that list.
+
+Package: libamdxvba1
+Architecture: amd64 i386
+Depends: ${shlibs:Depends}, libc6, ia32-libs [amd64]
+Replaces: xorg-driver-fglrx (<= 2:8.543-0ubuntu2)
+Description: AMD Unified Video Decoder library
+ This package provides the support for the AMD unified video
+ decoder library.  This can be used for accelerated XvMC output.
+ .
+ Unfortunately, this package requires an unsupported library,
+ so it is not installed by default.

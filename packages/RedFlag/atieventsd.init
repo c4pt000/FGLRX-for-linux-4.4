@@ -1,0 +1,74 @@
+#!/bin/sh
+# Startup script for the ATI External Events Daemon (atieventsd)
+#
+# chkconfig: 2345 97 07
+# description: Grant or revoke access to X for the ATI External Events Daemon
+# processname: /usr/sbin/atieventsd
+# pidfile: /var/run/atieventsd.pid
+#
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+[ -f /usr/sbin/atieventsd ] || exit 0
+
+LOCKFILE=/var/lock/subsys/atieventsd
+DAEMONOPTS=""
+
+start() {
+    echo -n $"Starting ATI External Events Daemon: "
+    daemon /usr/sbin/atieventsd $DAEMONOPTS
+    RETVAL=$?
+    if [ $RETVAL -ne 0 ]; then
+	failure;
+    fi;
+    echo
+    [ $RETVAL -eq 0 ] && touch $LOCKFILE;
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping ATI External Events Daemon: "
+    if [ -f $LOCKFILE ]; then
+	killproc atieventsd
+	RETVAL=$?
+	if [ $RETVAL -ne 0 ]; then
+	    failure;
+	fi;
+    fi;
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $LOCKFILE;
+    return $RETVAL
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+
+	stop)
+	    stop
+	    ;;
+
+	status)
+	    status atieventsd
+	    ;;
+
+	restart|reload)
+	    stop
+	    start
+	    ;;
+
+	condrestart)
+	    if [ -f $LOCKFILE ]; then
+		stop
+		start
+	    fi
+	    ;;
+
+	*)
+	    echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+	    exit 1
+
+esac
+
+exit $RETVAL

@@ -1,0 +1,8 @@
+#Lintian overrides
+debian/overrides/fglrx-kernel-source            usr/share/lintian/overrides
+
+#Actual kernel modules
+lib/modules/fglrx/build_mod/*                   usr/src/fglrx-#CVERSION#
+debian/dkms/*                                   usr/src/fglrx-#CVERSION#
+arch/#ARCH#/lib/modules/fglrx/build_mod/lib*    usr/src/fglrx-#CVERSION#
+debian/dkms.conf                                usr/src/fglrx-#CVERSION#

@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="yes"?>
+<install 
+	desc="AMD  Proprietary Driver 15.302" 
+	nobinaries="yes" 
+	version="15.302" 
+	nouninstall="yes" 
+	splash="atilogo.xpm" 
+	path="" 
+	nopromptoverwrite="yes" 
+	superuser="yes" 
+	meta="yes">
+	
+  <option product="setup.data/package.xml" install="true">Generate Distribution Specific Driver Package (Recommended)</option>	
+  <option product="setup.data/install.xml">Install Driver 15.302 on X.Org 6.9 or later 64-bit</option>
+</install>

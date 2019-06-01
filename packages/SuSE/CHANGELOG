@@ -1,0 +1,462 @@
+-------------------------------------------------------------------
+Mon Mar  2 22:04:30 CET 2015 - Sebastian Siebert <freespacer@gmx.de>
+
+- add a missing library in OpenCL package fglrx_opencl
+
+-------------------------------------------------------------------
+Wed Feb  4 20:49:34 CET 2015 - Sebastian Siebert <freespacer@gmx.de>
+
+- add group field in the sub packages (fglrx.spec)
+
+-------------------------------------------------------------------
+Wed Feb  4 00:00:48 CET 2015 - Sebastian Siebert <freespacer@gmx.de>
+
+- add openSUSE 13.2 support
+- add magic modprobe line for SLE
+- add special dracut support
+
+-------------------------------------------------------------------
+Thu Aug 14 20:21:26 CEST 2014 - Sebastian Siebert <freesapcer@gmx.de>
+
+- switched to use of update-alternatives for sle12 and openSUSE > 13.1
+- moved (use of) switchlibglx/switchlibGL from core to graphics subpackage
+- make use of update-alternatives in switchlibglx
+- added sle12 as supported OS
+(Thanks to Stefan Dirsch from SUSE for the patch)
+
+-------------------------------------------------------------------
+Tue Aug 12 21:07:48 CEST 2014 - Sebastian Siebert <freesapcer@gmx.de>
+
+- add same required version of the dependencies like the meta package
+
+-------------------------------------------------------------------
+Mon Aug 11 23:50:44 CEST 2014 - Sebastian Siebert <freesapcer@gmx.de>
+
+- rewrite fglrx spec file to split up into 5 fglrx packages:
+  - fglrx-core
+  - fglrx-graphics (depends on fglrx-core)
+  - fglrx-amdcccle (depends on fglrx-core and fglrx-graphics)
+  - fglrx-opencl   (depends on fglrx-core)
+  - fglrx-xpic = Meta package that depends on all above called
+                 packages (like old behaviour)
+- add more parameters in ati-packager.sh to build only needed
+  packages (is passed by the amd installer).
+  - Parameter:
+    --NoXServer = fglrx-core
+    --graphics  = fglrx-core, fglrx-graphics
+    --amdcccle  = fglrx-core, fglrx-graphics, fglrx-amdcccle
+    --OpenCL    = fglrx-core, fglrx-opencl
+- add obsolete fglrx packages from older SLE systems
+
+-------------------------------------------------------------------
+Mon Jul  7 23:17:08 CEST 2014 - Sebastian Siebert <freespacer@gmx.de>
+
+- adjust the right permission for /usr/bin/amd-console-helper
+- add obsolete fglrx packages from older openSUSE systems
+
+-------------------------------------------------------------------
+Mon Jan 06 05:31:53 CET 2014 - Sebastian Siebert <freespacer@gmx.de>
+
+- private Qt-libaries should not be provided
+
+-------------------------------------------------------------------
+Sat Nov 23 11:57:34 CET 2013 - Sebastian Siebert <freespacer@gmx.de>
+
+- update switchlibGL script to fixed 32-bit OpenGL library issue
+  on 64-bit openSUSE system.
+
+-------------------------------------------------------------------
+Sat Oct 12 23:54:12 CEST 2013 - Sebastian Siebert <freespacer@gmx.de>
+
+- update the packaging support
+  - add openSUSE 13.1 packaging support
+- fix openSUSE 13.1 autodetection
+
+-------------------------------------------------------------------
+Mon Sep 09 14:16:00 CEST 2013 - Sebastian Siebert <freespacer@gmx.de>
+
+- fglrx-kernel-build.sh sort correctly the installed Kernel version
+
+-------------------------------------------------------------------
+Mon May 06 13:05:12 CEST 2013 - Sebastian Siebert <freespacer@gmx.de>
+
+- fix the symlink to the Mesa OpenGL Library in the switchlibGL script (openSUSE 12.3)
+
+-------------------------------------------------------------------
+Sat Jan 26 12:01:35 CET 2013 - Sebastian Siebert <freespacer@gmx.de>
+
+- update the packaging support
+  - add openSUSE 12.3 packaging support
+  - remove openSUSE 11.3 packaging support
+  - move openSUSE 11.4 packaging suport to the unsupported OS list
+
+-------------------------------------------------------------------
+Thu Jul 26 10:16:00 CEST 2012 - Sebastian Siebert <freespacer@gmx.de>
+
+- remove unneeded patch: amd-3.4.0-missing-functions.patch
+
+-------------------------------------------------------------------
+Thu Jun 14 21:17:00 CEST 2012 - Sebastian Siebert <freespacer@gmx.de>
+
+- add patch for Kernel 3.4.0 and higher to prevent compile error
+- activate packaging for openSUSE 12.2
+
+-------------------------------------------------------------------
+Thu May 03 20:15:03 CEST 2012 - Sebastian Siebert <freespacer@gmx.de>
+
+- add new file for /etc/ati/atiapfxx.blb
+- create /etc/ati/atiapfuser.blb during installation and remove the
+  file if the package was uninstalled.
+
+-------------------------------------------------------------------
+Wed Mar 07 19:37:22 CET 2012 - Sebastian Siebert <freespacer@gmx.de>
+
+- remove runlevel 3 from the init script atieventsd.sh
+
+-------------------------------------------------------------------
+Wed Feb 15 19:20:01 CET 2012 - Sebastian Siebert <freespacer@gmx.de>
+
+- update packaging script and fglrx.spec file
+  - remove unneeded ati-powermode.sh
+
+-------------------------------------------------------------------
+Sat Jan 07 19:51:51 CET 2012 - Sebastian Siebert <freespacer@gmx.de>
+
+- add auto detection for Balsam Professional
+  - Balsam Professional is based on openSUSE
+
+-------------------------------------------------------------------
+Sun Nov 20 17:02:29 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- openSUSE 12.1:
+  - add search path for dynamic libraries: /usr/X11R6/lib{,64}
+- change mode bits 644 => 755 for /usr/lib/*
+- add unsupported openSUSE 12.2
+
+-------------------------------------------------------------------
+Mon Oct 10 08:20:32 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- activate packaging for openSUSE 12.1
+- add kernel-debug package in the detecting routine of build script
+- rewrite the PowerXpress check routine in the post install script
+
+-------------------------------------------------------------------
+Fri Sep 30 00:04:15 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add OpenCL runtime integration (changes in packaging script + spec file)
+
+-------------------------------------------------------------------
+Fri Aug 19 00:44:15 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- rewrite the KMS Configuration for Tumbleweed and openSUSE 12.1
+
+-------------------------------------------------------------------
+Thu Jul 28 14:13:23 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- KMS Configuration in Tumbleweed for openSUSE 11.4 is missing
+- add to the force mode removing the older fglrx kernel modules
+  in fglrx-kernel-build.sh
+
+-------------------------------------------------------------------
+Thu Jul 14 21:03:41 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- rename variables from ATI to AMD
+
+-------------------------------------------------------------------
+Thu Jun 30 02:35:23 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add new KMS Configuration for further openSUSE versions (e.g., 12.1)
+- rename from ATI to AMD in some scripts
+- add symlink /usr/bin/amdconfig to /usr/bin/aticonfig
+
+-------------------------------------------------------------------
+Fri Jun 17 22:17:03 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- remove the support of openSUSE 11.2
+
+-------------------------------------------------------------------
+Thu May 19 01:19:27 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- remove patch file for Kernel 2.6.39 because is no longer required for 8.87
+- add unsupported openSUSE Factory alias openSUSE 12.1 again
+- backup files during removing fglrx package:
+  - /etc/X11/xorg.conf -> /etc/X11/xorg.conf.fglrx-oldconfig
+  - /etc/sysconfig/fglrxconfig -> /etc/sysconfig/fglrxconfig-oldconfig
+  - /etc/X11/xorg.conf.fglrx-original-<n> -> /etc/X11/xorg.conf
+    if the above file contains #NOXORGCONFEXISTED, remove safely both files.
+- change the behaviour of recovering the configuration
+  files by reinstallation:
+  - if old configuration files exist either /etc/X11/xorg.conf.fglrx-oldconfig
+    or /etc/X11/xorg.conf.fglrx-post, move it to /etc/X11/xorg.conf
+  - if old configuration file /etc/sysconfig/fglrxconfig-oldconfig exists,
+    move it to /etc/sysconfig/fglrxconfig
+
+-------------------------------------------------------------------
+Wed May 12 21:40:46 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- fix version numbering in ati-packager.sh to solve an issue
+  with package manager (for example: 8.85 -> 8.850)
+
+-------------------------------------------------------------------
+Wed May 11 19:33:44 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add a patch file for Kernel 2.6.39 (deprecated BKL issue)
+
+-------------------------------------------------------------------
+Wed Apr 27 22:17:13 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- fix the path in the switchlibglx script on SLE 10
+- add more Kernel packages to fglrx-kernel-build.sh:
+  - kernel-bigsmp
+  - kernel-vanilla
+
+-------------------------------------------------------------------
+Wed Apr 27 00:12:11 CEST 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- fix ati-packager.sh because some files were removed
+  in /usr/X11R6/lib{,64}/fglrx/
+
+-------------------------------------------------------------------
+Sat Mar 26 15:23:20 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- move out the creating of symlinks from the spec file into the
+  switchable scripts
+
+-------------------------------------------------------------------
+Sat Mar 26 00:34:18 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add 2 switchable scripts for PowerXpress:
+  - switchlibGL
+  - switchlibglx
+- update spec file
+
+-------------------------------------------------------------------
+Tue Mar 08 09:12:40 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add a rotated line while rpmbuild is running
+
+-------------------------------------------------------------------
+Sun Feb 27 23:54:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- remove patch file for Kernel 2.6.38 because is no longer required for 8.84
+
+-------------------------------------------------------------------
+Sun Feb 20 05:31:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- change /etc/modprobe.d/fglrx.conf to /etc/modprobe.d/50-fglrx.conf
+
+-------------------------------------------------------------------
+Sun Feb 20 04:41:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- fix to set the local language to LANG=C and LC_ALL=C
+- add a patch file for Kernel 2.6.38
+
+-------------------------------------------------------------------
+Sat Feb 19 09:07:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add KERNEL_DEVEL variable to overwrite or deactivate the requirements
+  of kernel development packages
+  Usage:
+  # KERNEL_DEVEL="kernel-source kernel-devel kernel-desktop-devel" ...
+  or deactivate it (only use for a vanilla kernel):
+  # KERNEL_DEVEL="no" ...
+- add support for vanilla kernel in fglrx-kernel-build.sh
+- add USE_VANILLA_KERNELS (yes|no*) variable in the fglrxconfig to
+  activate the build of an fglrx kernel module for the vanilla kernel
+- add FGLRX_BUILD_LOG_APPEND (yes*|no) variable in the fglrxconfig and
+  boot.fglrxrebuild to append to the log file or remove it
+
+-------------------------------------------------------------------
+Fri Feb 18 06:12:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- fix an issue with spaces in the extracted full path to the ati installer
+
+-------------------------------------------------------------------
+Thu Feb 17 18:40:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add RELEASE to overwrite the release number for the RPM package
+  Usage:
+  # RELEASE="2.1" ./ati-driver-installer-(version)-(arch).sh --buildpkg ...
+
+-------------------------------------------------------------------
+Thu Feb 17 17:21:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- change in fglrx.spec: add only kernel-syms as dependency
+
+-------------------------------------------------------------------
+Thu Feb 17 16:44:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add a patch for kernel 2.6.38 to prevents a build failure
+
+-------------------------------------------------------------------
+Thu Feb 17 11:49:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- change in fglrx.spec
+  - remove required packages like kernel-syms, kernel-*-devel
+    because we have already a package kernel-devel with the
+    necessary dependencies
+
+-------------------------------------------------------------------
+Wed Feb 16 13:00:00 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- update all scripts the year 2011 in the copyright
+- add a new config file 'fglrxconfig' for the sysconfig-Editor to
+  configure the behaviour of the scripts in boot.fglrxrebuild and
+  fglrx-kernel-build.sh
+  supported configuration (* = standard value):
+    - AUTO_REBUILD (yes*|no)
+    - AUTO_LOAD (yes*|no)
+    - FGLRX_BUILD_LOG (/var/log/fglrx-build.log)
+    - BUILD_FOR_ALL_KERNELS (yes|no*)
+    - FORCE_BUILD (yes|no*)
+  template located at /var/adm/fillup-templates/sysconfig.fglrxconfig
+- change in ati-packager.sh and fglrx.spec:
+  - add fglrxconfig to /etc/sysconfig to configure the behaviour
+    of the scripts
+- retrofit the boot.fglrxrebuild:
+  - add variable AUTO_REBUILD to enabled rebuilding the fglrx
+    kernel module (/etc/sysconfig/fglrxconfig)
+  - add variable AUTO_LOAD to enabled loading the fglrx kernel
+    module (/etc/sysconfig/fglrxconfig)
+  - if AUTO_REBUILD and AUTO_LOAD are disabled, the init script
+    does nothing
+  - auto detection of the full path to the binaries
+  - the option "status" was completely removed because the option
+    "start" have the same functionality
+  - rebuild the fglrx kernel module if kernel versions is not equal
+    with the built-in kernel version of fglrx
+  - additional log entry: build date
+  - remove the control character in the log
+- retrofit the fglrx-kernel-build.sh:
+  - add parameter --all to build the fglrx kernel module for all
+    supported kernels (Variable: BUILD_FOR_ALL_KERNELS)
+  - add parameter --force to force building the fglrx kernel module
+    (Variable: FORCE_BUILD)
+  - auto detection of the fullpath to the binaries
+  - fix call of depmod to execute for every kernel version
+- fix a build failure with SLE10
+  - use rpm instead of zypper (ati-packager.sh)
+  - linux-kernel-headers is no longer required (fglrx.spec)
+  - add kernel-smp to kernel list (fglrx-kernel-build.sh)
+
+-------------------------------------------------------------------
+Sun Jan 30 00:25:42 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add 'aticonfig --initial' in spec file to create an initial configuration,
+  this prevents an error in aticonfig while removing the versions
+  (ReleaseVersion and Catalyst_Version) in /etc/ati/amdpcsdb
+
+-------------------------------------------------------------------
+Thu Jan 20 17:09:56 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- add uninstall script amd-uninstall.sh
+- changes in ati-packager.sh:
+  - create subdirectories for the build root: BUILD_ROOT/usr/X11R6/lib{,64}/fglrx
+  - copy /usr/X11R6/lib{,64}/libgl* to BUILD_ROOT/usr/X11R6/lib{,64}/fglrx
+  - copy DISTRO_PACKAGE_DIR/amd-uninstall.sh to BUILD_ROOT/usr/share/ati
+- changes in fglrx-kernel-build.sh:
+  - change build root /usr/src/kernel-modules/fglrx to ./2.6.x
+  - modify "make clean" command
+  - remove existing modules.order in build root for clean up
+- changes in fglrx.spec:
+  - create subdirectories in the build root: /usr/X11R6/lib{,64}/fglrx
+  - create symbolic link /usr/X11R6/lib/libGL.so.1.2 to fglrx/libGL.so.1.2
+  - create subdirectories: /usr/X11R6/lib{,64}/modules/updates/extensions/fglrx
+  - create symbolic link /usr/X11R6/lib{,64}/modules/updates/extensions/libglx.so to fglrx/libglx.so
+  - install all files in /usr/X11R6/lib{,64}/fglrx/*
+  - install all files in /usr/X11R6/lib{,64}/modules/updates/extensions/fglrx/*
+  - install uninstall script amd-uninstall.sh to /usr/share/ati
+  - remove unnecessary define variable X11_INCLUDE_DIR
+  - remove all include path of /usr/include/X11/extensions
+  - remove symbolic links from non-existing libfglrx_gamma.so*
+  - remove symbolic link /usr/src/kernel-modules/fglrx/Makefile
+
+-------------------------------------------------------------------
+Thu Jan 20 12:48:02 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- small changes in spec file
+
+-------------------------------------------------------------------
+Thu Jan 20 08:42:32 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- removed support for openSUSE 11.1
+
+-------------------------------------------------------------------
+Thu Jan 20 08:19:56 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- activated packaging for openSUSE 11.4
+
+-------------------------------------------------------------------
+Wed Jan 12 20:14:29 CET 2011 - Sebastian Siebert <freespacer@gmx.de>
+
+- rewritten the list of supported openSUSE and SLE
+  to fixed a bad substitution in a non-bash shell
+
+-------------------------------------------------------------------
+Tue Dec 21 17:23:16 CET 2010 - Sebastian Siebert <freespacer@gmx.de>
+
+- add two aticonfig commands to remove keys as follows:
+  - LDC/ReleaseVersion
+  - LDC/Catalyst_Version
+
+-------------------------------------------------------------------
+Tue Dec 21 13:25:15 CET 2010 - Sebastian Siebert <freespacer@gmx.de>
+
+- changes in ati-packager.sh:
+  - add option "--get-maintainer"
+  - new package name conventions:
+    fglrx{,64}_xpic_{SLE,SUSE}(osversion)-(fglrxversion).(arch).rpm
+- change in supportedOS.sh:
+  - rename XOrg-Version to xpic
+- change in spec file:
+  - all old package name conventions are obsolete:
+    fglrx{,64}_6_9_0_SLE10
+    fglrx{,64}_7_4_0_SLE11
+    fglrx{,64}_7_4_0_SUSE111
+    fglrx{,64}_7_4_0_SUSE112
+    fglrx{,64}_7_5_0_SUSE113
+    fglrx{,64}_7_6_0_SUSE114
+
+-------------------------------------------------------------------
+Tue Dec 21 08:31:03 CET 2010 - Sebastian Siebert <freespacer@gmx.de>
+
+- add a missing "exit 0" on get-supported
+
+-------------------------------------------------------------------
+Fri Dec 17 06:20:24 CET 2010 - Sebastian Siebert <freespacer@gmx.de>
+
+- retrofit the fglrx-kernel-build.sh:
+  - improve speed up the compilation on multi-core machines
+
+-------------------------------------------------------------------
+Thu Dec 16 23:37:56 CET 2010 - Sebastian Siebert <freespacer@gmx.de>
+
+- retrofit the fglrx-kernel-build.sh:
+  - fixed an issue with a build failure and exit too early. The successive
+    kernels was not builded the fglrx kernel module.
+  - improve a summary report of the build and installation of the
+    fglrx kernel module to all kernel versions and flavors.
+- add a patch for kernel >= 2.6.36 with the issue of the function with
+  compat_alloc_user_space(). The make flag "-DCOMPAT_ALLOC_USER_SPACE=..."
+  does not work.
+- remove obsolete patch: ati-opensuse-11.4.patch
+
+-------------------------------------------------------------------
+Mon Dec 13 07:42:31 CET 2010 - Sebastian Siebert <freespacer@gmx.de>
+
+- packaging script and spec file were completely rewritten
+- add a verbose mode (1 = what are you doing, 2 = tell me everything)
+  Usage:
+  # VERBOSE="1" ./ati-driver-installer-(version)-(arch).sh --buildpkg ...
+  # VERBOSE="2" ./ati-driver-installer-(version)-(arch).sh --buildpkg ...
+- add an auto detection of openSUSE and SLE version and architecture
+  Usage:
+  # ./ati-driver-installer-(version)-(arch).sh --buildpkg SuSE/SUSE-autodetection
+- add a switch to unlock unsupported openSUSE version
+  Usage:
+  # UNSUPPORTED="yes" ./ati-driver-installer-(version)-(arch).sh --buildpkg ...
+- add a rebuild script boot.fglrxrebuild at boot time (init) with a
+  logging function to /var/log/fglrx-build.log
+- add a renew fglrx-kernel-build.sh with a support to rebuild of all
+  available installed kernel flavors and versions
+- renew the patches

@@ -1,0 +1,49 @@
+ATI video drivers for Debian
+============================
+
+Further information can be found at http://www.ati.com/ -- look for
+the "Drivers & Software" page and follow links to the Linux drivers.
+
+This package is generated automatically via the official ATI driver
+installer that is available from the above homepage.
+
+
+Building the kernel module
+--------------------------
+
+First, cd into /usr/src and unpack the kernel module sources:
+   $ cd /usr/src
+   $ bzcat fglrx.tar.bz2 | tar x
+
+You can build the kernel module in several ways:
+1) Use the supplied make.sh script. This will build a module that matches
+   the running kernel; you need to have the correct kernel source and
+   configuration in place.
+
+2) Use the following commands (only on kernel 2.6.x):
+   $ cd /usr/src/linux
+   $ make SUBDIRS=/usr/src/modules/fglrx modules
+   (replace /usr/src/linux with the path to your kernel sources)
+
+3) Use the make-kpkg(1) command provided by the kernel-package Debian
+   package. This will produce a corresponding fglrx-kernel package for the
+   Debian kernel-image package that you are using. This is "the Debian
+   way". See the "modules_image" section of the make-kpkg(1) man page.
+
+4) Use module-assistant. In the usual environment it should detect all
+   requirements. Example (assuming that you build for the running kernel):
+
+   # module-assistant a-i fglrx
+   
+   If you have never built modules before, you should prepare the build
+   environment by running:
+   # module-assistant prepare
+
+   If you prefer to build the packages with m-a from your own user account
+   (with ~/src/linux being the kernel source):
+   $ mkdir -p ~/src/modass
+   $ module-assistant -u ~/src/modass -k ~/src/linux install fglrx
+
+Options 3) and 4) will create a nice Debian package to install;
+otherwise, you'll have to copy the module to the right directory under
+/lib/modules, then run 'depmod -ae' and 'modprobe fglrx' to load it.

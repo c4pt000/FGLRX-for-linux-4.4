@@ -1,0 +1,84 @@
+0. COME FUNZIONA LO SCRIPT ati-packager.sh
+---
+Questo script viene invocato dallo script della ATI ati-installer.sh e quindi si deve interfacciare a lui tramite le API
+messe a disposizione proprio dell'ati-installer.sh. Per capire come funziona questo script quindi bisogna capire come
+viene invocato e perchè.
+
+1. LA CORRELAZIONE TRA ati-installer.sh E ati-packager.sh
+---
+L'utente che vuole utilizzare i driver ATI scarica dal sito un file .run, il quale altro non è che un archivio compresso
+e autoestraibile makeself. Dopo che l'archivio è stato estratto, viene esiguito automaticamente lo script
+ati-installer.sh il quale accetta una serie di opzioni. Per ogni opzion accettata dallo script ati-installer.sh ne
+esiste una nello script ati-packager.sh. Di script ati-package.sh ce ne sono tanti per quante sono le directory contenute
+in packages/. L'ati-installer.sh a volte esegue tutti gli script, a volte ne esegue solo uno identificato dall'utente
+che lancia il .run oppure dall'ati-installer.sh stesso.
+
+Vediamo quindi che cosa succede:
+NOTA 0: quello che di seguito viene identificato come [package] è nella forma distro/pacchetto, ed serve per
+      identificare la distribuzione ed il pacchetto che si deve creare, in particolare:
+      distro=nome di una directory sotto packages/.
+      pacchetto=nome di un pacchetto così come ritornato dall'opzione --listpkg (si veda di seguito)
+|--------------------------------------------|-------------------------------------------------------------------------|
+|       OPZIONE dell'ati-installer.sh        |                                  Come viene gestita                     |
+|--------------------------------------------|-------------------------------------------------------------------------|
+| --listpkg                                  | Vengono eseguiti tutti gli ati-packager.sh invocati con l'opzione       |
+|                                            | --get-supported                                                         |
+|--------------------------------------------|-------------------------------------------------------------------------|
+| --buildpkg [package] [--dryrun]            | Qui si sviluppano vari casi:                                            |
+|                                            | 1) I parametri opzionali non vengono passati:                           |
+|                                            |    Vengono eseguiti tutti gli ati-packager.sh invocati con l'opzione    |
+|                                            |    --identify "pacchetto", una volta per ogni "pacchetto" che           |
+|                                            |    l'ati-package.sh supporta, e, se e solo se, uno solo di loro         |
+|                                            |    ritorna 0, allora l'ati-installre riesegue lo specifico              |
+|                                            |    ati-packager.sh che ha  ritornato 0 invocandolo con l'opzione        |
+|                                            |    --buildprep "pacchetto" e, se questo ritorna 0, allora riesegue per  |
+|                                            |    la terza volta l'ati-packager.sh invocandolo con l'opzione           |
+|                                            |    --buildpkg "pacchetto".                                              |
+|                                            |                                                                         |
+|                                            | 2) Viene passato solo il parametro [package]:                           |
+|                                            |    Viene eseguito lo specifico ati-packager.sh identificato dal         |
+|                                            |    parametro [package] invocandolo con l'opzione                        |
+|                                            |    --buildprep "pacchetto" e, se questo ritorna 0, allora viene         |
+|                                            |    rieseguito l'ati-packager.sh invocandolo con l'opzione               |
+|                                            |    --buildpkg "pacchetto".                                              |
+|                                            |                                                                         |
+|                                            | 3) Vengono passati entrambi i parametri [package] e [--dryrun]          |
+|                                            |    Vengono effettuati gli stessi passi che al punto 2), solo che durante|
+|                                            |    l'invocazione dell'ati-package.sh con l'opzione --buildprep gli passa|
+|                                            |    anche il parametro --dryrun (si veda la NOTA 1).                     |
+|--------------------------------------------|-------------------------------------------------------------------------|
+| --buildandinstallpkg [package] [--dryrun]  | Anche qui si sviluppano gli stessi casi che quando l'ati-installer.sh   |
+|                                            | viene invocato tramite l'opzione --buildpkg. L'unica differenza e che   |
+|                                            | dopo aver fatto i passi che farebbe se fosse invocato solo con          |
+|                                            | --buildpkg, l'ati-installer.sh invoca di nuovo l'ati-packager.sh con    |
+|                                            | l'opzione --installprep (eventualmente con il parametro --dryrun) e, se |
+|                                            | questo ritorna 0, allora lo invoca un ultima volta con l'opzione        |
+|                                            | --install.                                                              |
+|--------------------------------------------|-------------------------------------------------------------------------|
+NOTA 1: il parametro --dryrun in pratica dice all'ati-packager.sh di stampare a video l'elenco dei controlli che
+esegue per verificare se tutto va bene.
+
+2. COSA FANNO LE VARIE OPZIONI GESTITE DALL'ati-packager.sh
+---
+Esaminiamo ora tutte le varie opzioni gestite dall'ati-packager.sh per vedere cosa fanno:
+|------------------------------|---------------------------------------------------------------------------------------|
+| OPZIONE dell'ati-packager.sh |                                  Come viene gestita                                   |
+|------------------------------|---------------------------------------------------------------------------------------|
+| --get-supported              | Stampa a video un elenco dei nomi di pacchetti che è in grado di creare/installare    |
+|------------------------------|---------------------------------------------------------------------------------------|
+| --buildprep                  | Controlla che tutto il necessario alla costruzione del/i pacchetto/i sia              |
+|                              | correnttamente installato                                                             |
+|------------------------------|---------------------------------------------------------------------------------------|
+| --buildpkg                   | Costruisce effettivamente il/i pacchetto/i                                            |
+|------------------------------|---------------------------------------------------------------------------------------|
+| --installprep                | Controlla che tutto il necessario all'installazione del/i pacchetto/i sia             |
+|                              | correttamente installato                                                              |
+|------------------------------|---------------------------------------------------------------------------------------|
+| --install                    | Installa effettivamente il/i pacchetto/i                                              |
+|------------------------------|---------------------------------------------------------------------------------------|
+| --identify                   | Deve ritornare 0 se è solo se la distribuzione e il "pacchetto" su cui si tenta di far|
+|                              | eseguire lo script sono gli stessi per il quale è stato costruito                     |
+|------------------------------|---------------------------------------------------------------------------------------|
+| --getAPIVersion              | Ritorna la versione delle API (tra ati-installer.sh e ati-packager.sh) che lo script  |
+|                              | implementa                                                                            |
+|------------------------------|---------------------------------------------------------------------------------------|

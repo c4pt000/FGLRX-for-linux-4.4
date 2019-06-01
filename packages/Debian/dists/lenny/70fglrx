@@ -1,0 +1,9 @@
+LIBGL_DRIVERS_PATH=/usr/lib/dri
+if [ `uname -m` = 'x86_64' ]; then
+  if [ -d /emul/ia32-linux/usr/lib/dri ]; then
+    LIBGL_DRIVERS_PATH=${LIBGL_DRIVERS_PATH}:/emul/ia32-linux/usr/lib/dri
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/emul/ia32-linux/usr/lib
+    export LD_LIBRARY_PATH
+  fi
+fi
+export LIBGL_DRIVERS_PATH

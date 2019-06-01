@@ -1,0 +1,81 @@
+# ATI SlackBuild
+# Copyright (C) 2011
+# This file is distributed under the same license as the ATI SlackBuild package.
+# Emanuele Tomasi <tomasi@cli.di.unipi.it>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ATI_SlackBuild\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-27 17:56+0100\n"
+"PO-Revision-Date: 2011-02-27 17:57+0100\n"
+"Last-Translator: Emanuele Tomasi <tomasi@cli.di.unipi.it>\n"
+"Language-Team:\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ati-packager.sh:65
+msgid "The name of the current directory mustn't contain any spaces"
+msgstr "Il nome della directory corrente non deve contenere nessuno spazio"
+
+#: ati-packager.sh:116
+msgid "Check for "
+msgstr "Controllo il "
+
+#: ati-packager.sh:134
+msgid "NOT FOUND"
+msgstr "NON TROVATO"
+
+#: ati-packager.sh:137
+msgid "You must install command:"
+msgstr "Devi installare il comando:"
+
+#: ati-packager.sh:141
+msgid "file not found, internal error. Please contact the maintaners."
+msgstr "file non trovato, errore interno. Contattare i maintainers."
+
+#: ati-packager.sh:146
+msgid "OK"
+msgstr "OK"
+
+#: ati-packager.sh:160
+msgid "Only root can do it!"
+msgstr "Devi essere root!"
+
+#: ati-packager.sh:267
+msgid "Install/Upgrade package"
+msgstr "Installo/Aggiorno il pacchetto"
+
+#: ati-packager.sh:333
+msgid "Not a valid parameter: "
+msgstr "Parametro non valido: "
+
+#: make_module.sh:47
+msgid "ERROR: I didn't make module"
+msgstr "ERRORE: non sono riuscito a creare il modulo"
+
+#: make_x.sh:35
+msgid "ERROR: your X server isn't supported"
+msgstr "ERRORE: il tuo server X non è supportato"
+
+#: patch_functions.sh:32 patch_functions.sh:91
+msgid "applied"
+msgstr "applicata"
+
+#: patch_functions.sh:47
+msgid "Found internal patch:"
+msgstr "Trovata la patch interna:"
+
+#: patch_functions.sh:78
+msgid "Found patch:"
+msgstr "Trovata la patch:"
+
+#: patch_functions.sh:88
+msgid "Found the ati_to_gpl.patch, checking md5sum"
+msgstr "Trovata la patch ati_to_gpl.patch, controllo l'md5sum"
+
+#: patch_functions.sh:93
+msgid "md5sum failed, it not seem the original ati_to_gpl.patch"
+msgstr "md5sum fallito, non sembra esssere la patch originale ati_to_gpl.patch"

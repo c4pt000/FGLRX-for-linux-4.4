@@ -1,0 +1,113 @@
+#!/usr/bin/expect
+#
+# Purpose
+#   Automatically installs LGD with the default options without
+#   input from the user
+#
+# Usage
+#   Either of the following commands can be used to invoke this script:
+#     sudo ./automatic-install.exp <installer_binary_filename>
+#     sudo <path_to_expect> ./automatic-install.exp <installer_binary_filename>
+#
+# Change history
+#   - created by Denver Gingerich in August 2006
+
+# set expect to never timeout (default timeout is 10 seconds)
+set timeout -1
+
+proc ncurses_install {} {
+    # Welcome message
+    exp_send "\r"
+
+    expect {
+       "Please enter the installation path"    policy_selection
+       "Please pick a product to install"      installation
+    }
+
+}
+
+proc text_install {} {
+    # Please choose the product to install, or Q to quit
+    # 1 for install driver, 2 for package generation
+    exp_send "1\r"
+
+    # license agreement appears
+    expect { 
+        "Do you agree with the license?" text_recommended_install
+        "A previous install of the fglrx driver " detect_previous
+    }
+}
+
+proc text_recommended_install {} {
+     
+    # do you agree with the license? Agree (Y)es
+    exp_send "Y\r"
+    
+    expect "Do you want to proceed with Recommended installation?"
+    # (Y) do recommended install
+    exp_send "Y\r"
+    expect eof   
+}
+
+proc detect_previous {} {
+    # A previous install of fglrx driver is detected
+    exp_send "\r"
+    expect eof
+    exit 1
+}
+
+
+proc installation {} {
+    # install driver or package? choose the default (driver)
+    exp_send "\r"
+    expect "You are running a"
+    # notice appears informing you what system you're on; click OK
+    exp_send "\r"
+    
+    
+    
+    expect {
+        "Software End User License Agreement"  recommended_install
+        "Message"                              detect_previous
+    }
+}
+
+proc recommended_install {} {
+    # license agreement appears; click EXIT
+    exp_send "\r"
+    expect "Do you agree with the license?"
+    # do you agree with the license? click Yes
+    exp_send "\r"
+    expect "Please select the class of installation"
+    # recommended or expert install?  click OK (default: recommended)
+    exp_send "\r"
+    expect eof
+}
+
+
+proc policy_selection {} {
+    # where do you want to install the temp file?  default location is fine
+    exp_send "\r"
+    expect "Please choose the options to install"
+    # choose the option to install (only one listed); click OK
+    exp_send "\r"
+    # a "(+)" will always appear at the bottom of the list of distributions,
+    #  regardless of what the list contains or how long it is
+    expect "(+)"
+    # select the first distribution from the list and click OK
+    exp_send " \r"
+    expect "You are running a"
+    # notice appears informing you what system you're on; click OK
+    exp_send "\r"
+
+    installation
+}
+
+
+spawn [lindex $argv 0]
+expect {  
+   "*AMD  Proprietary Driver*installation program*" text_install
+   "You are running a" ncurses_install
+}
+
+

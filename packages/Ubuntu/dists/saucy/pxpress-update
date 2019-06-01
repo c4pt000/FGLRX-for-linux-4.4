@@ -1,0 +1,7 @@
+#!/bin/sh
+
+gpumanager="$(which gpu-manager)"
+if [ -n "$gpumanager" ]; then
+    $gpumanager --log /var/log/gpu-manager.log
+fi
+

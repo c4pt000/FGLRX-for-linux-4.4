@@ -1,0 +1,28 @@
+# Purpose
+#   Policy that b45verifyfiles.sh uses to determine if all the files are in
+#   their appropriate places within the installer package; this policy should
+#   only be used for this purpose since the location of files within the
+#   installer may not (and probably will not) coincide with the location of the
+#   files on an end user's system
+#
+# Usage
+#   Sourced by b45verifyfiles.sh
+
+ATI_DOC=/usr/share/doc/fglrx
+ATI_MAN=/usr/share/man
+ATI_X11_INCLUDE=/usr/X11R6/include
+ATI_GL_INCLUDE=/usr/include/GL
+ATI_ATIGL_INCLUDE=/usr/include/ATI/GL
+ATI_X_BIN=/usr/X11R6/bin
+ATI_SRC=/usr/src/ati
+ATI_SBIN=/usr/sbin
+ATI_KERN_MOD=/lib
+ATI_CP_LNK=/usr/share/applications
+ATI_ICON=/usr/share/icons
+ATI_CP_BIN=${ATI_X_BIN}
+ATI_CP_I18N=/usr/share/ati/amdcccle
+ATI_CP_DOC=/usr/share/doc/amdcccle
+ATI_LIB=/usr/share/ati/lib
+ATI_SECURITY_CFG=/etc/security/console.apps
+OPENCL_CONFIG=/etc/OpenCL/vendors
+OPENCL_BIN=/usr/bin

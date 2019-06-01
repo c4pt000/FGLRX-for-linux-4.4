@@ -1,0 +1,8 @@
+#We are in restricted, whether lintian has ever heard of it or not
+fglrx-kernel-source: unknown-section restricted
+
+#These unfortunately are needed if we really want to be able to link?
+fglrx-kernel-source: arch-independent-package-contains-binary-or-object ./usr/src/fglrx-#CVERSION#/libfglrx_ip.a.GCC3
+fglrx-kernel-source: unstripped-binary-or-object ./usr/src/fglrx-#CVERSION#/libfglrx_ip.a.GCC3
+fglrx-kernel-source: arch-independent-package-contains-binary-or-object ./usr/src/fglrx-#CVERSION#/libfglrx_ip.a.GCC4
+fglrx-kernel-source: unstripped-binary-or-object ./usr/src/fglrx-#CVERSION#/libfglrx_ip.a.GCC4

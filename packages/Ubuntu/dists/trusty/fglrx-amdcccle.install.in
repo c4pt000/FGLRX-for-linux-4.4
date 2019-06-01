@@ -1,0 +1,7 @@
+debian/overrides/#DRIVERCTRLNAME# #DATADIR#/lintian/overrides
+debian/com.ubuntu.amdcccle.pkexec.policy usr/share/polkit-1/actions
+usr/share/icons/*.xpm usr/share/pixmaps
+usr/share/ati usr/share
+usr/share/applications/*.desktop usr/share/fglrx
+usr/X11R6/bin/* #BINDIR#
+arch/#SRCARCH#/usr/X11R6/bin/amdcccle #BINDIR#

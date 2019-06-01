@@ -1,0 +1,267 @@
+<?xml version="1.0" standalone="yes"?>
+
+<install 
+	desc="AMD  Proprietary Driver 15.302" 
+	nobinaries="yes" 
+	version="15.302" 
+	nouninstall="yes" 
+	splash="atilogo.xpm" 
+	path="" 
+	nopromptoverwrite="yes" 
+	express="yes" 
+	postinstall="sh config_install.sh > /dev/null">
+
+  <eula keepdirs="yes">usr/share/ati/LICENSE.TXT</eula>
+
+  <require command="sh detect_gpu.sh">
+  Your graphics adapter is not supported by this driver. Installation will not proceed. 
+  </require>    
+ 
+  <require command="sh detect_previous.sh">
+  A previous install of the fglrx driver has
+  been detected. Please uninstall the older
+  version before installing this version.
+  Optionally, run the installer with --force
+  option to overwrite the existing driver.
+  Forcing install is not recommended.
+  See /usr/share/ati/fglrx-install.log for more
+  details.
+  </require>
+
+  <require command="sh detect_requirements.sh">
+  Please install the required pre-requisites before 
+  proceeding with AMD Proprietary Driver installation.
+  Install the required pre-requisites before installing 
+  the fglrx driver. Optionally, run the
+  installer with --force option to install 
+  without the tools.
+  Forcing install will disable AMD hardware 
+  acceleration and may make your system 
+  unstable. Not recommended.
+  Please check file /usr/share/ati/fglrx-install.log for more details.
+  </require>     
+  
+  <post_install_msg command=". ./verify_install.sh">
+    There were errors during installation.  Details can be found in /usr/share/ati/fglrx-install.log
+  </post_install_msg>
+
+  <option size="10732" install="true" required="true">
+    Install Requirements    <script message="Preprocessing Install Requirements">sh pre_doc.sh</script>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/LICENSE.TXT</files>
+    <script message="Copying uninstall files for Install Requirements">sh copy_uninstall_files.sh doc install</script>
+  </option>
+  <option size="397254275" install="true" required="true">
+    Display and OpenGL Drivers    <script message="Preprocessing Display and OpenGL Drivers">sh pre_drv.sh</script>
+    <files path="usr/share/doc/ati/user-manual">install/usr/share/doc/ati/user-manual/AMD_Linux_Driver_Specification.pdf</files>
+    <files path="usr/share/doc/ati/user-manual">install/usr/share/doc/ati/user-manual/index.html</files>
+    <files path="usr/share/doc/ati/examples/etc/acpi/events">install/usr/share/doc/ati/examples/etc/acpi/events/a-ac-aticonfig</files>
+    <files path="usr/share/doc/ati/examples/etc/acpi/events">install/usr/share/doc/ati/examples/etc/acpi/events/a-lid-aticonfig</files>
+    <files path="usr/share/doc/ati/examples/etc/acpi" mode="755">install/usr/share/doc/ati/examples/etc/acpi/ati-powermode.sh</files>
+    <files path="usr/share/doc/ati/examples/etc/init.d" mode="755">install/usr/share/doc/ati/examples/etc/init.d/atieventsd.sh</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/1gbhang.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4461.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4462.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4463.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4464.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4469.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4470.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4475.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4478.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4479.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4480.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4481.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4482.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4483.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4484.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/4485.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/corruptstereo.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/corruptvtswitch.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/devshm.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/dga3dhang.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/doom3corrupt.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/dualheadvideo.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/laptopsuspend.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/missingdrmheaders.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/mousecursorhang.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/no3d-aiw8500dv.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/no3d-kt400.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/nomembercount.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/pcie3dmemoryleak.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/r420blankdisplay.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/rv280dviblankdisplay.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/rv350springdale.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/secondheadcorruption.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/xf86_enodev.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/xrestartpcie.html</files>
+    <files path="usr/share/doc/ati/articles">install/usr/share/doc/ati/articles/xvsatshift.html</files>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/configure.html</files>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/driverfaq.html</files>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/index.html</files>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/installer.html</files>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/issues.html</files>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/linuxfaq.html</files>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/tips-linux.html</files>
+    <files path="usr/share/man/man8">install/usr/share/man/man8/atieventsd.8</files>
+    <files path="usr/lib64/xorg/modules/linux">install/usr/lib64/xorg/modules/linux/libfglrxdrm.so</files>
+    <files path="usr/lib64/xorg/modules/drivers">install/usr/lib64/xorg/modules/drivers/fglrx_drv.so</files>
+    <files path="usr/lib64/xorg/modules">install/usr/lib64/xorg/modules/glesx.so</files>
+    <files path="usr/lib64/xorg/modules">install/usr/lib64/xorg/modules/amdxmm.so</files>
+    <files path="usr/lib">install/usr/lib/libamdocl12cl32.so</files>
+    <files path="usr/lib">install/usr/lib/libamdocl32.so</files>
+    <files path="usr/lib">install/usr/lib/libAMDXvBA.cap</files>
+    <files path="usr/lib">install/usr/lib/libAMDXvBA.so.1.0</files>
+    <files path="usr/lib">install/usr/lib/libatiadlxx.so</files>
+    <files path="usr/lib">install/usr/lib/libaticalcl.so</files>
+    <files path="usr/lib">install/usr/lib/libaticaldd.so</files>
+    <files path="usr/lib">install/usr/lib/libaticalrt.so</files>
+    <files path="usr/lib">install/usr/lib/libatiuki.so.1.0</files>
+    <files path="usr/lib">install/usr/lib/libfglrx_dm.a</files>
+    <files path="usr/lib">install/usr/lib/libfglrx_dm.so.1.0</files>
+    <files path="usr/lib">install/usr/lib/libOpenCL.so.1</files>
+    <files path="usr/lib">install/usr/lib/libXvBAW.so.1.0</files>
+    <files path="usr/lib/fglrx">install/usr/lib/fglrx/fglrx-libGL.so.1.2</files>
+    <files path="usr/lib64/fglrx" mode="755">install/usr/lib64/fglrx/switchlibGL</files>
+    <files path="usr/lib64/fglrx" mode="755">install/usr/lib64/fglrx/switchlibglx</files>
+    <files path="usr/lib/dri">install/usr/lib/dri/fglrx_dri.so</files>
+    <files path="usr/lib64/xorg/modules/extensions/fglrx">install/usr/lib64/xorg/modules/extensions/fglrx/fglrx-libglx.so</files>
+    <files path="usr/lib64">install/usr/lib64/libamdocl12cl64.so</files>
+    <files path="usr/lib64">install/usr/lib64/libamdocl64.so</files>
+    <files path="usr/lib64">install/usr/lib64/libAMDXvBA.cap</files>
+    <files path="usr/lib64">install/usr/lib64/libAMDXvBA.so.1.0</files>
+    <files path="usr/lib64">install/usr/lib64/libatiadlxx.so</files>
+    <files path="usr/lib64">install/usr/lib64/libaticalcl.so</files>
+    <files path="usr/lib64">install/usr/lib64/libaticaldd.so</files>
+    <files path="usr/lib64">install/usr/lib64/libaticalrt.so</files>
+    <files path="usr/lib64">install/usr/lib64/libatiuki.so.1.0</files>
+    <files path="usr/lib64">install/usr/lib64/libfglrx_dm.a</files>
+    <files path="usr/lib64">install/usr/lib64/libfglrx_dm.so.1.0</files>
+    <files path="usr/lib64">install/usr/lib64/libOpenCL.so.1</files>
+    <files path="usr/lib64">install/usr/lib64/libXvBAW.so.1.0</files>
+    <files path="usr/lib64/fglrx">install/usr/lib64/fglrx/fglrx-libGL.so.1.2</files>
+    <files path="usr/lib64/dri">install/usr/lib64/dri/fglrx_dri.so</files>
+    <files path="usr/include/GL">install/usr/include/GL/glATI.h</files>
+    <files path="usr/include/GL">install/usr/include/GL/glxATI.h</files>
+    <files path="usr/include/ATI/GL">install/usr/include/ATI/GL/glxext.h</files>
+    <files path="usr/include/ATI/GL">install/usr/include/ATI/GL/glx.h</files>
+    <files path="usr/bin" mode="755">install/usr/bin/fgl_glxgears</files>
+    <files path="usr/bin" mode="755">install/usr/bin/fglrxinfo</files>
+    <files path="usr/bin" mode="755">install/usr/bin/aticonfig</files>
+    <files path="usr/bin" mode="755">install/usr/bin/atiodcli</files>
+    <files path="usr/bin" mode="755">install/usr/bin/atiode</files>
+    <files path="usr/bin" mode="755">install/usr/bin/amd-console-helper</files>
+    <files path="usr/bin" mode="755">install/usr/bin/clinfo</files>
+    <files path="usr/src/ati">install/usr/src/ati/fglrx_sample_source.tgz</files>
+    <files path="usr/sbin" mode="755">install/usr/sbin/amdnotifyui</files>
+    <files path="usr/sbin" mode="755">install/usr/sbin/atieventsd</files>
+    <files path="usr/sbin" mode="755">install/usr/sbin/atigetsysteminfo.sh</files>
+    <files path="etc/ati">install/etc/ati/amdpcsdb.default</files>
+    <files path="etc/ati">install/etc/ati/atiapfxx</files>
+    <files path="etc/ati">install/etc/ati/atiapfxx.blb</files>
+    <files path="etc/ati">install/etc/ati/atiapfxx.log</files>
+    <files path="etc/ati" mode="755">install/etc/ati/authatieventsd.sh</files>
+    <files path="etc/ati">install/etc/ati/control</files>
+    <files path="etc/ati">install/etc/ati/logo_mask.xbm.example</files>
+    <files path="etc/ati">install/etc/ati/logo.xbm.example</files>
+    <files path="etc/ati">install/etc/ati/signature</files>
+    <files path="etc/OpenCL/vendors">install/etc/OpenCL/vendors/amdocl32.icd</files>
+    <files path="etc/OpenCL/vendors">install/etc/OpenCL/vendors/amdocl64.icd</files>
+    <files path="usr/X11R6/lib/modules/dri">install/usr/X11R6/lib/modules/dri/fglrx_dri.so</files>
+    <files path="usr/X11R6/lib64/modules/dri">install/usr/X11R6/lib64/modules/dri/fglrx_dri.so</files>
+    <files path="usr/bin" mode="755">install/usr/bin/amdconfig</files>
+    <script message="Postprocessing Display and OpenGL Drivers">sh post_drv.sh</script>
+    <script message="Copying uninstall files for Display and OpenGL Drivers">sh copy_uninstall_files.sh drv install</script>
+  </option>
+  <option size="18891768" install="true" required="true">
+    Kernel Module    <script message="Preprocessing Kernel Module">sh pre_km.sh</script>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/drm_os_linux.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/firegl_public.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_str.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/drmP.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_pci.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_agp.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_acpi.h</files>
+    <files path="lib/modules/fglrx/build_mod" mode="755">install/lib/modules/fglrx/build_mod/make.sh</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/libfglrx_ip.a</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_debug.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_str.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_ioctl.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/drm_compat.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_iommu.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_config.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/firegl_public.c.orig</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_iommu.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_wait.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/fglrxko_pci_ids.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/drm_proc.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_ioctl.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_io.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/drm.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_pci.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_wait.h</files>
+    <files path="lib/modules/fglrx/build_mod/2.6.x">install/lib/modules/fglrx/build_mod/2.6.x/Makefile</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/firegl_public.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_agp.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_io.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_debug.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_acpi.c</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_type.h</files>
+    <files path="lib/modules/fglrx/build_mod">install/lib/modules/fglrx/build_mod/kcl_osconfig.h</files>
+    <files path="lib/modules/fglrx" mode="755">install/lib/modules/fglrx/make_install.sh</files>
+    <files path="etc/modprobe.d">install/etc/modprobe.d/blacklist-fglrx.conf</files>
+    <script message="Postprocessing Kernel Module">sh post_km.sh</script>
+    <script message="Copying uninstall files for Kernel Module">sh copy_uninstall_files.sh km install</script>
+  </option>
+  <option size="30226199" install="true">
+    AMD Control Center    <script message="Preprocessing AMD Control Center">sh pre_cp.sh</script>
+    <files path="usr/share/applications">install/usr/share/applications/amdcccle.desktop</files>
+    <files path="usr/share/applications">install/usr/share/applications/amdccclesu.desktop</files>
+    <files path="usr/share/icons">install/usr/share/icons/ccc_large.xpm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_cs.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_da_DK.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_de.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_el_GR.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_es_ES.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_fi_FI.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_fr_FR.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_hu_HU.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_it_IT.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_ja.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_ko_KR.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_nl_NL.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_no.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_pl.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_pt_BR.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_ru_RU.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_sv_SE.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_th.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_tr_TR.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_zh_CN.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/amdcccle_zh_TW.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_cs.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_da.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_de.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_es.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_fr.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_hu.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_ja_JP.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_ja.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_ko.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_pl.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_pt.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_ru.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_sv.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_zh_CN.qm</files>
+    <files path="usr/share/ati/amdcccle">install/usr/share/ati/amdcccle/qt_zh_TW.qm</files>
+    <files path="usr/bin" mode="755">install/usr/bin/amdcccle</files>
+    <files path="usr/bin" mode="755">install/usr/bin/amdxdg-su</files>
+    <files path="usr/bin" mode="755">install/usr/bin/amdupdaterandrconfig</files>
+    <files path="usr/share/doc/ati">install/usr/share/doc/ati/ccc_copyrights.txt</files>
+    <files path="etc/security/console.apps">install/etc/security/console.apps/amdcccle-su</files>
+    <files path="usr/share/ati/lib64">install/usr/share/ati/lib64/libQtCore.so.4</files>
+    <files path="usr/share/ati/lib64">install/usr/share/ati/lib64/libQtGui.so.4</files>
+    <script message="Postprocessing AMD Control Center">sh post_cp.sh</script>
+    <script message="Copying uninstall files for AMD Control Center">sh copy_uninstall_files.sh cp install</script>
+  </option>
+</install>

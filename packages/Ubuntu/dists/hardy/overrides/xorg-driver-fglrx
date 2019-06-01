@@ -1,0 +1,18 @@
+#We are in restricted, whether lintian has ever heard of it or not
+xorg-driver-fglrx: unknown-section restricted
+
+#AMD doesn't appear to document these binaries
+xorg-driver-fglrx: binary-without-manpage usr/bin/aticonfig
+xorg-driver-fglrx: binary-without-manpage usr/bin/atiodcli
+xorg-driver-fglrx: binary-without-manpage usr/bin/atiode
+xorg-driver-fglrx: binary-without-manpage usr/bin/fgl_glxgears
+xorg-driver-fglrx: binary-without-manpage usr/bin/fglrxinfo
+xorg-driver-fglrx: binary-without-manpage usr/sbin/atieventsd
+xorg-driver-fglrx: binary-without-manpage usr/sbin/amdnotifyui
+
+#We have NO control of AMD's build process
+xorg-driver-fglrx: sharedobject-in-library-directory-missing-soname usr/lib/libatiadlxx.so
+xorg-driver-fglrx: shlib-with-non-pic-code usr/lib/libGL.so.1.2
+
+#It's awfully silly to break these out as they are only ever installed with fglrx
+xorg-driver-fglrx: package-name-doesnt-match-sonames libGL1 libfglrx-dm1.0 libfglrx-pp1.0 libfglrx-tvout1

@@ -1,0 +1,3 @@
+TODO:
+- write a logrotate config file for /var/log/fglrx-build.log
+- write own ati report for more implementing outputs (ati-report.sh)

@@ -1,0 +1,222 @@
+#!/bin/sh
+#
+# Copyright (c) 2010-2014, Sebastian Siebert (freespacer@gmx.de)
+# All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# Changelog:
+#
+# Version 1.0 - inital development
+#
+# /etc/init.d/fglrxrebuild
+#
+### BEGIN INIT INFO
+# Provides:          boot.fglrxrebuild
+# Required-Start:    $local_fs
+# Should-Start:
+# Required-Stop:     $null
+# Should-Stop:
+# Default-Start:     B
+# Default-Stop:
+# Short-Description: Automatically rebuild the fglrx kernel module
+# Description:       A service to build a fglrx kernel module for new kernels
+### END INIT INFO
+
+# Shell functions sourced from /etc/rc.status:
+#      rc_check         check and set local and overall rc status
+#      rc_status        check and set local and overall rc status
+#      rc_status -v     be verbose in local rc status and clear it afterwards
+#      rc_status -v -r  ditto and clear both the local and overall rc status
+#      rc_status -s     display "skipped" and exit with status 3
+#      rc_status -u     display "unused" and exit with status 3
+#      rc_failed        set local and overall rc status to failed
+#      rc_failed <num>  set local and overall rc status to <num>
+#      rc_reset         clear both the local and overall rc status
+#      rc_exit          exit appropriate to overall rc status
+#      rc_active        checks whether a service is activated by symlinks
+. /etc/rc.status
+
+# Reset status of this service
+rc_reset
+
+# Return values acc. to LSB for all commands but status:
+# 0	  - success
+# 1       - generic or unspecified error
+# 2       - invalid or excess argument(s)
+# 3       - unimplemented feature (e.g. "reload")
+# 4       - user had insufficient privileges
+# 5       - program is not installed
+# 6       - program is not configured
+# 7       - program is not running
+# 8--199  - reserved (8--99 LSB, 100--149 distrib, 150--199 appl)
+# 
+# Note that starting an already running service, stopping
+# or restarting a not-running service as well as the restart
+# with force-reload (in case signaling is not supported) are
+# considered a success.
+
+# Detected some important binaries or scripts with full path
+DATE_BIN="`which date`"
+ECHO_BIN="`which echo`"
+GREP_BIN="`which grep`"
+LSMOD_BIN="`which lsmod`"
+MODINFO_BIN="`which modinfo`"
+MODPROBE_BIN="`which modprobe`"
+PRINTF_BIN="`which printf`"
+SED_BIN="`which sed`"
+SEQ_BIN="`which seq`"
+UNAME_BIN="`which uname`"
+FGLRX_KERNEL_BUILD_SH="`which fglrx-kernel-build.sh`"
+
+# Set standard values
+FGLRX_CONFIG="/etc/sysconfig/fglrxconfig"
+FORCE_REBUILD="no"
+FGLRX_BUILD_LOG="/var/log/fglrx-build.log"
+FGLRX_BUILD_LOG_APPEND="yes"
+AUTO_REBUILD="yes"
+AUTO_LOAD="yes"
+
+# Test if we have a real config file
+if [ -r "${FGLRX_CONFIG}" -a -f "${FGLRX_CONFIG}" ]; then
+    . ${FGLRX_CONFIG}
+fi
+
+case "$1" in
+    start|status)
+        if [ "${AUTO_REBUILD}" = "yes" ]; then
+            ${ECHO_BIN} -n "Check for rebuild the fglrx kernel module"
+            ${ECHO_BIN} " if necessary ..."
+
+            # Get the full path to the fglrx kernel module
+            FGLRX_KERNEL_MODULE="`${MODINFO_BIN} -F filename fglrx 2>/dev/null`"
+
+            # Get the compiled kernel version of the found module matches
+            # the version of the running kernel
+            FGLRX_KERNEL_MODULE_VERSION="`${MODINFO_BIN} -F vermagic fglrx \
+                                            2>/dev/null | \
+                                            ${GREP_BIN} \`${UNAME_BIN} -r\``"
+
+            # Test if we have a fglrx module with the correct kernel version
+            if [ -z "${FGLRX_KERNEL_MODULE_VERSION}" \
+                    -a -f "${FGLRX_KERNEL_MODULE}" ]; then
+                FORCE_REBUILD="yes"
+            fi
+
+            # Test if we either have not found the kernel module or are forced
+            # to build one
+            if [ ! -f "${FGLRX_KERNEL_MODULE}" \
+                    -o "${FORCE_REBUILD}" = "yes" ]; then
+
+                if [ "${FORCE_REBUILD}" = "yes" ]; then
+                    ${ECHO_BIN} -n "   The kernel version and built-in kernel"
+                    ${ECHO_BIN} " version of fglrx are different!"
+                    ${ECHO_BIN} "   I rebuild it NOW. Please wait ..."
+                else
+                    ${ECHO_BIN} -n "   The fglrx kernel module does not exist!"
+                    ${ECHO_BIN} " I build it NOW. Please wait ..."
+                fi
+
+                # If do not append at the log file then remove it
+                if [ "${FGLRX_BUILD_LOG_APPEND}" = "no" ]; then
+                    rm -f ${FGLRX_BUILD_LOG}
+                fi
+
+                # Prepare the log file to add current date
+                ${PRINTF_BIN} '*%.0s' $(${SEQ_BIN} 1 80) >>${FGLRX_BUILD_LOG}
+                TODAY="`LANG=C ${DATE_BIN}`"
+                PADDING="`${PRINTF_BIN} ' %.0s' \
+                            $(${SEQ_BIN} 1 $[63-${#TODAY}])`"
+                ${ECHO_BIN} -n -e "\n*   Build date: ${TODAY}${PADDING}*\n" \
+                                                        >>${FGLRX_BUILD_LOG}
+                ${PRINTF_BIN} '*%.0s' $(${SEQ_BIN} 1 80) >>${FGLRX_BUILD_LOG}
+                ${ECHO_BIN} -n -e "\n" >>${FGLRX_BUILD_LOG}
+
+                # Run the build script
+                ${FGLRX_KERNEL_BUILD_SH} -f >>${FGLRX_BUILD_LOG} 2>&1
+
+                # Test if the build of fglrx kernel module is successfull
+                if [ "$?" -ne 0 ]; then
+                    ${ECHO_BIN} -n "   FATAL: The fglrx kernel module"
+                    ${ECHO_BIN} " could not be built!"
+                    rc_failed 1
+                else
+                    rc_failed 0
+                fi
+
+                # Remove the control character in the log file
+                ${SED_BIN} -e 's/\x1B\[1;32m//g' \
+                            -e 's/\x1B\[0m//g' \
+                            -i ${FGLRX_BUILD_LOG}
+            else
+                ${ECHO_BIN} "   The fglrx kernel module was already built."
+            fi
+        fi
+
+        # Test if we could load the fglrx kernel module
+        if [ "${AUTO_LOAD}" = "yes" ]; then
+            ${ECHO_BIN} "Check for the fglrx kernel module is running..."
+
+            # Test if fglrx was loaded
+            if [ -z "`${LSMOD_BIN} | ${GREP_BIN} fglrx`" ]; then
+                ${ECHO_BIN} -n "   The fglrx kernel module is not loaded!"
+                ${ECHO_BIN} " Try it to modprobe now ..."
+
+                # Try to load fglrx
+                ${MODPROBE_BIN} --first-time fglrx
+
+                # Test again if fglrx was loaded
+                if [ -n "`${LSMOD_BIN} | ${GREP_BIN} fglrx`" ]; then
+                    ${ECHO_BIN} -n "   The fglrx kernel module was"
+                    ${ECHO_BIN} " successfully loaded."
+                    rc_failed 0
+                else
+                    ${ECHO_BIN} -n "   FATAL: The fglrx kernel module"
+                    ${ECHO_BIN} " could not loaded!"
+                    rc_failed 1
+                fi
+            else
+                # Test if we are in start mode
+                if [ "$1" = "start" ]; then
+                    ${ECHO_BIN} "   The fglrx kernel module is loaded."
+                fi
+                rc_failed 0
+            fi
+        fi
+
+        # Test if the rebuild script is basically disabled
+        if [ "${AUTO_REBUILD}" = "no" -a "${AUTO_LOAD}" = "no" ]; then
+            rc_failed 3
+        fi
+
+        # Remember status and be verbose
+        rc_status -v
+        ;;
+    stop)
+        # we ignored this commands
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status}"
+        exit 1
+        ;;
+esac
+rc_exit

@@ -1,0 +1,2 @@
+OS=Ubuntu;Version=any;filename=/etc/default/locale;command=NA;Search=UTF-8;
+OS=RedHat;Version=any;filename=/etc/default/locale;command=NA;Search=UTF-8;

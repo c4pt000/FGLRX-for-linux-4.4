@@ -1,0 +1,33 @@
+#!/bin/sh
+# Copyright (C) 2002-2005 Flavio Stanchina
+# Copyright (C) 2005-2006 Aric Cyr
+# Copyright (C) 2007-2008 Mario Limonciello
+
+#DEBHELPER#
+
+CVERSION=`dpkg-query -W -f='${Version}' fglrx-kernel-source | awk -F "-" '{print $1}' | cut -d\: -f2`
+SOURCES=/var/lib/dkms/fglrx/
+
+case "$1" in
+    remove|upgrade)
+                if [ -d $SOURCES ]; then
+                    for directory in $(ls $SOURCES); do
+			kind=$(echo "$directory" | awk '$1 ~ /.*[a-z].*$/ { print "alpha"; next } { print "num" }')
+                        # the names of the directories containing the version of the driver are digits (e.g. 8.573)
+                        if [ "$kind" = "num" ]; then
+                             comparison=$(echo "$directory" | awk -v Version="$CVERSION" '($1 != Version) { print "yes"; next } { print "no" }')
+                             # if the version is less than $VERSION
+                             if [ "$comparison" = "yes" ]; then
+					echo "Removing old untracked DKMS directory: $SOURCES$directory"
+                        		rm -rf $SOURCES$directory 2>/dev/null
+                   	     fi
+			fi
+		    done
+                fi
+		echo "Removing all DKMS Modules"
+		dkms remove -m fglrx -v $CVERSION --all > /dev/null
+		echo "Done."
+        ;;
+esac
+
+

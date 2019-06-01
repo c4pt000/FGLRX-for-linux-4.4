@@ -1,0 +1,260 @@
+#!/usr/bin/make -f
+# Copyright (C) 2002-2005 Flavio Stanchina
+# Copyright (C) 2005-2006 Aric Cyr
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+CFLAGS = -Wall
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -g
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+ifneq (,$(ARCH))
+	DEB_BUILD_ARCH := $(ARCH)
+else 
+ifeq (,$(DEB_BUILD_ARCH))
+	DEB_BUILD_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+endif
+endif
+
+# Changelog version (without Debian-specific version)
+CVERSION := $(shell dpkg-parsechangelog | grep '^Version:' | cut -d' ' -f2 | cut -d- -f1)
+DVERSION := $(shell dpkg-parsechangelog | grep '^Version:' | cut -d' ' -f2)
+
+# Detect X implementation.
+# If you want to build for a specific implementation, set XTYPE accordingly.
+# Examples: XTYPE=XFree86, XTYPE=X.Org
+ifeq (,$(XTYPE))
+	XTYPE := $(shell X -version 2>&1 | grep -E "^(XFree86|X Window System|X.Org X) (Version|Server) " | sed -e "s/^X Window System /X.Org /;s/Server //" | cut -d' ' -f1)
+endif
+ifeq (,$(XSERVER))
+	ifeq ($(XTYPE),XFree86)
+		XSERVER := xfree86
+	endif
+	ifeq ($(XTYPE),X.Org)
+		XSERVER := xorg
+	endif
+endif
+
+# This is the fglrx version.
+# Example: PVERSION=2.9.13
+ifeq (,$(PVERSION))
+	PVERSION := $(CVERSION)
+endif
+
+# The driver for 6.9.0 also works with 7.0.0, and hopefully later versions
+XVERSION := 1:7.1.0
+XVERSIONMAX := 1:7.1.99
+
+KSRCDIR  := usr/src/modules/fglrx
+
+# Package names
+PKG_driver      := fglrx-driver
+PKG_driver_dev  := fglrx-driver-dev
+PKG_kernel_src  := fglrx-kernel-src
+PKG_control     := fglrx-amdcccle
+
+build:
+	dh_testdir
+
+	# move licenses away from binary dir
+	if [ ! -d usr/share/doc/fglrx ]; then \
+	  mkdir -p usr/share/doc/fglrx; \
+	  mv usr/X11R6/bin/LICENSE.* usr/share/doc/fglrx; \
+	fi
+
+	# set executable on user apps
+	find usr/X11R6/bin -type f | xargs chmod a+x
+
+	# remove exec bit from files that don't deserve it
+	find usr/X11R6/include \
+	     usr/X11R6/lib \
+	     usr/X11R6/lib64 \
+	     usr/share usr/src     -type f | xargs chmod -x
+	find lib -not -name "*.sh" -type f | xargs chmod -x
+	find lib      -name "*.sh" -type f | xargs chmod +x
+
+	# set proper permissions on /etc files
+	if [ -d etc/ati ]; then			\
+		chmod 755 etc/ati ;			\
+		chmod 644 etc/ati/* ;		\
+		chmod a+x etc/ati/*.sh ;	\
+	fi
+
+	if [ -f debian/fglrx.default ]; then \
+	  mv -v debian/fglrx.default debian/fglrx; \
+	fi
+ifeq ($(DEB_BUILD_ARCH),amd64)
+	# remove exec bit from 64-bit libs too
+	find usr/X11R6/lib64       -type f | xargs chmod -x
+endif
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean
+	-rm -fr usr opt lib
+	-rm -fr extra_src
+
+# NOTE: rm -i because I don't want to accidentally remove downloaded files
+distclean: clean
+	-rm -i $(RPMNAME)
+
+binary: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	# Create the directories to install into
+	dh_installdirs -p$(PKG_driver) \
+		usr \
+		usr/lib/xorg \
+		usr/lib/xorg/modules \
+		usr/lib/dri \
+		usr/bin \
+		usr/sbin \
+		etc/acpi \
+		etc/acpi/events \
+		etc/default \
+		etc/X11/Xsession.d
+
+ifeq ($(DEB_BUILD_ARCH),amd64)
+	# the amd64 package includes 32bit compatibility libraries
+	dh_installdirs -p$(PKG_driver) \
+		emul/ia32-linux/usr/lib \
+		emul/ia32-linux/usr/lib/xorg \
+		emul/ia32-linux/usr/lib/xorg/modules \
+		emul/ia32-linux/usr/lib/dri
+endif
+
+	dh_installdirs -p$(PKG_driver_dev) \
+		usr \
+		usr/include \
+		usr/lib
+	dh_installdirs -p$(PKG_kernel_src) \
+		$(KSRCDIR) \
+		$(KSRCDIR)/debian
+	dh_installdirs -A -p$(PKG_control) \
+		usr \
+		usr/bin \
+		usr/share \
+		usr/share/applnk \
+		usr/share/applications \
+		usr/share/icons \
+		usr/share/pixmaps
+	dh_installdirs -p$(PKG_sources) \
+		usr/src
+
+	dh_install
+
+	dh_install -p$(PKG_driver) "usr/X11R6/bin/fgl*"      "usr/bin"
+	dh_install -p$(PKG_driver) "usr/X11R6/bin/aticonfig" "usr/bin"
+	dh_install -p$(PKG_driver) "usr/sbin/atieventsd"     "usr/sbin"
+	dh_installman -p$(PKG_driver) "usr/share/man/man8/atieventsd.8"
+	# amd64 needs some library redirection
+ifeq ($(DEB_BUILD_ARCH),amd64)
+	dh_install -p$(PKG_driver) "usr/X11R6/lib64/*.so*"           "usr/lib"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib64/modules/dri"     "usr/lib"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib64/modules/linux"   "usr/lib/xorg/modules"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib64/modules/drivers" "usr/lib/xorg/modules"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib64/modules/extensions" "usr/lib/xorg/modules"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib64/modules/*.so"    "usr/lib/xorg/modules"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib64/modules/*.a"     "usr/lib/xorg/modules"
+
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/*.so*"           "emul/ia32-linux/usr/lib"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/modules/dri"     "emul/ia32-linux/usr/lib"
+else
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/*.so*"           "usr/lib"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/modules/dri"     "usr/lib"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/modules/linux"   "usr/lib/xorg/modules"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/modules/drivers" "usr/lib/xorg/modules"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/modules/extensions" "usr/lib/xorg/modules"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/modules/*.so"    "usr/lib/xorg/modules"
+	dh_install -p$(PKG_driver) "usr/X11R6/lib/modules/*.a"     "usr/lib/xorg/modules"
+endif
+	dh_install -p$(PKG_driver) "etc/fglrx*"                "etc"
+	dh_install -p$(PKG_driver) "etc/ati"                   "etc"
+	dh_install -p$(PKG_driver) "debian/70fglrx" 	       "etc/X11/Xsession.d"
+	dh_install -p$(PKG_driver) "debian/fglrx-powermode.sh" "etc/acpi"
+	dh_install -p$(PKG_driver) "debian/fglrx-*-aticonfig"  "etc/acpi/events"
+	dh_install -p$(PKG_driver) "debian/fglrx"              "etc/default"
+	dh_installinit -p$(PKG_driver) --name="atieventsd"
+
+	# create symlinks to shared libs
+	dh_link    -p$(PKG_driver) "usr/lib/libGL.so.1.2"		  "usr/lib/libGL.so.1"
+ifeq ($(DEB_BUILD_ARCH),amd64)
+	dh_link    -p$(PKG_driver) "emul/ia32-linux/usr/lib/libGL.so.1.2" "emul/ia32-linux/usr/lib/libGL.so.1"
+endif
+
+ifeq ($(DEB_BUILD_ARCH),amd64)
+	dh_install -p$(PKG_driver_dev) "usr/X11R6/lib64/*.a" "usr/lib"
+else
+	dh_install -p$(PKG_driver_dev) "usr/X11R6/lib/*.a"   "usr/lib"
+endif
+	dh_install -p$(PKG_driver_dev) "usr/X11R6/include/*" "usr/include"
+	dh_install -p$(PKG_driver_dev) "usr/include/*"       "usr/include"
+
+	dh_install -p$(PKG_kernel_src) \
+		lib/modules/fglrx/build_mod/*.c            \
+		lib/modules/fglrx/build_mod/*.h            \
+		lib/modules/fglrx/build_mod/*.sh           \
+		lib/modules/fglrx/build_mod/lib*           \
+		lib/modules/fglrx/build_mod/2.6.x/Makefile \
+		$(KSRCDIR)
+ifeq ($(CVERSION),$(PVERSION))
+	dh_install -p$(PKG_kernel_src) "debian/changelog" "$(KSRCDIR)/debian"
+else
+	echo -e "fglrx-installer ($(PVERSION)+$(DVERSION)) experimental; urgency=low\n" \
+		> debian/$(PKG_kernel_src)/$(KSRCDIR)/debian/changelog
+	echo -e "  * Version set by user; real changelog omitted.\n" \
+		>> debian/$(PKG_kernel_src)/$(KSRCDIR)/debian/changelog
+	echo -e " -- $(USER) <$(EMAIL)>  $(shell date --rfc-822)\n" \
+		>> debian/$(PKG_kernel_src)/$(KSRCDIR)/debian/changelog
+endif
+	dh_install -p$(PKG_kernel_src)  \
+		debian/copyright        \
+		debian/compat           \
+		module/rules            \
+		module/control.template \
+		module/dirs.template    \
+		module/postinst         \
+		$(KSRCDIR)/debian
+	(cd debian/$(PKG_kernel_src)/usr/src \
+	 && chown -R root:src modules \
+	 && tar -jcf fglrx.tar.bz2 modules \
+	 && rm -rf modules)
+
+	# control panel package
+	dh_install -A -p$(PKG_control) "usr/X11R6/bin/amdcccle"            		"usr/bin"
+	dh_install -A -p$(PKG_control) "usr/share/icons/*.xpm"             		"usr/share/icons"
+	dh_install -A -p$(PKG_control) "usr/share/icons/*.xpm"             		"usr/share/pixmaps"
+	dh_install -A -p$(PKG_control) "debian/amdcccle.desktop"				"usr/share/applications"
+	dh_install -A -p$(PKG_control) "debian/amdcccle.kdelnk"					"usr/share/applnk"
+	dh_install -A -p$(PKG_control) "usr/share/ati"							"usr/share"
+	dh_desktop    -p$(PKG_control)
+
+	dh_installdocs
+	dh_installdocs -p$(PKG_driver) usr/share/doc/fglrx/*
+	#dh_installchangelogs
+	dh_link
+	dh_strip
+	dh_compress
+	dh_makeshlibs
+	dh_installdeb
+	LD_PRELOAD= dh_shlibdeps --exclude=emul
+ifeq ($(CVERSION),$(PVERSION))
+	dh_gencontrol -- -VXVERSION=$(XVERSION) -VXVERSIONMAX=$(XVERSIONMAX) -VXTYPE=$(XTYPE) -VXSERVER=$(XSERVER) -VVERSION=$(PVERSION)
+else
+	dh_gencontrol -- -VXVERSION=$(XVERSION) -VXVERSIONMAX=$(XVERSIONMAX) -VXTYPE=$(XTYPE) -VXSERVER=$(XSERVER) -VVERSION=$(PVERSION) -v$(PVERSION)+$(DVERSION)
+endif
+	dh_md5sums
+	dh_builddeb
+
+.PHONY: binary build clean distclean
+
+# $Id: rules,v 1.20 2005/06/02 11:09:44 flavio Exp $

@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+# Script modifies portions of xdg-su
+#   xdg-su
+#
+#   Utility script to run a command as an alternate user, generally
+#       the root user, with a graphical prompt for the root
+#       password if needed
+#
+#   Refer to the usage() function below for usage.
+#
+#   Copyright 2006, Jeremy White <jwhite@codeweavers.com>
+#   Copyright 2006, Kevin Krammer <kevin.krammer@gmx.at>
+#
+#   LICENSE:
+#
+#   Permission is hereby granted, free of charge, to any person obtaining a
+#   copy of this software and associated documentation files (the "Software"),
+#   to deal in the Software without restriction, including without limitation
+#   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+#   and/or sell copies of the Software, and to permit persons to whom the
+#   Software is furnished to do so, subject to the following conditions:
+#
+#   The above copyright notice and this permission notice shall be included
+#   in all copies or substantial portions of the Software.
+#
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+#   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+#   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+#   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+#   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#   OTHER DEALINGS IN THE SOFTWARE.
+#
+
+DE=""
+if [ x"$KDE_FULL_SESSION" = x"true" ]; then DE=kde;
+elif [ x"$GNOME_DESKTOP_SESSION_ID" != x"" ]; then DE=gnome;
+elif xprop -root _DT_SAVE_MODE | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=xfce;
+else
+    XSU=`which xsu 2>/dev/null`
+    if [ $? -eq 0 ] ; then
+        DE=generic
+    else
+        DE=""
+    fi
+fi
+            
+
+if [ "${DE}" != "" ]
+then
+        
+    case "$DE" in
+        kde)
+            KDESU=`which kdesu 2>/dev/null`
+            if [ $? -eq 0 ] ; then
+                su_command="$KDESU -n -c "
+            else
+                GKSU=`which gksu 2>/dev/null`
+                if [ $? -eq 0 ] ; then
+                    su_command="$GKSU -D \"AMD  Proprietary Driver: su access\" "
+                fi
+            fi
+        ;;
+
+        gnome)
+            GSU=`which gnomesu 2>/dev/null`
+            if [ $? -ne 0 ] ; then
+                GSU=`which xsu 2>/dev/null`
+            fi
+            if [ $? -eq 0 ] ; then
+                su_command="$GSU -c "
+            else
+                GKSU=`which gksu 2>/dev/null`
+                if [ $? -eq 0 ] ; then
+                    su_command="$GKSU -D \"AMD  Proprietary Driver: su access\" "
+                fi
+            fi
+        ;;
+    esac
+
+    XTERM=`which xterm 2>/dev/null`
+    GNOMETERM=`which gnome-terminal 2>/dev/null`
+    if [ -z "${su_command}" -a -n "$XTERM" ]
+    then
+            
+        # DE=generic or one of the methods above did not fall through
+        # use xterm dialog to request for su access.
+        # Check if root access permissions was granted by echoing to a file, sutest, prior to running installer            
+        su_command="$XTERM -geom 75x5 -T \"AMD  Proprietary Driver: su access\" -e"
+    
+    elif [ -z "${su_command}" -a -n "$GNOMETERM" ]
+    then
+        # DE=generic or one of the methods above did not fall through
+        # use xterm dialog to request for su access.
+        # Check if root access permissions was granted by echoing to a file, sutest, prior to running installer            
+        su_command="$GNOMETERM --disable-factory --geometry 75x5 -t \"AMD  Proprietary Driver: su access\" -e"
+    
+    fi
+fi    
+echo $su_command
+
+    

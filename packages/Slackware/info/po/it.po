@@ -1,0 +1,104 @@
+# ATI SlackBuild
+# Copyright (C) 2011
+# This file is distributed under the same license as the ATI SlackBuild package.
+# Emanuele Tomasi <tomasi@cli.di.unipi.it>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ATI_SlackBuild\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-27 17:58+0100\n"
+"PO-Revision-Date: 2011-02-20 20:39+0100\n"
+"Last-Translator: Emanuele Tomasi <tomasi@cli.di.unipi.it>\n"
+"Language-Team:\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: amd-uninstall.sh:33
+msgid "--version"
+msgstr "--version"
+
+#: amd-uninstall.sh:44 amd-uninstall.sh:50
+msgid "command not found."
+msgstr "comando non trovato."
+
+#: amd-uninstall.sh:72
+msgid "invalid option."
+msgstr "opzione non valida."
+
+#: amd-uninstall.sh:79
+msgid "Only root can do it!"
+msgstr "Devi essere root!"
+
+#: amd-uninstall.sh:96
+msgid "Removing pakage: "
+msgstr "Rimozione del pacchetto: "
+
+#: amd-uninstall.sh:115
+msgid "Restoring library: "
+msgstr "Ripristino della libreria: "
+
+#: doinst.sh:55
+msgid ""
+"NOTE: you have to modify the X server configuration file to use the ATI "
+"drivers:\\n\\n\\t\\taticonfig --initial\\n\\n      can it help you. Run "
+"aticonfig without options for more details."
+msgstr ""
+"NOTA: si deve modificare il file di configurazione del server X per poter "
+"usare\n"
+"      i driver ATI:\n"
+"\n"
+"            aticonfig --initial\n"
+"\n"
+"      può essere di aiuto. Eseguire aticonfig senza opzioni per altri "
+"dettagli."
+
+#: doinst.sh:68
+msgid "\\nNOTE: you are running the X server"
+msgstr "\\nNOTA: il server X è in esecuzione"
+
+#: doinst.sh:70
+msgid " and you have the module fglrx in memory."
+msgstr " e il modulo fglrx è caricato in memoria."
+
+#: doinst.sh:76
+msgid ""
+"\\n      If you want to use the new drivers, you will must kill the X server,"
+"\\n      so running:\\n\\n\\t\\tmodprobe -r fglrx\\n\\n      before restart "
+"it."
+msgstr ""
+"\\n      Se si vogliono usare i nuovi driver, si deve fermare il server X e "
+"quindi\n"
+"      dare:\n"
+"\n"
+"        modprobe -r fglrx\n"
+"\n"
+"      prima di rieseguirlo."
+
+#: doinst.sh:78
+msgid " If you want to use the new drivers, you will\\n      must rerun it."
+msgstr ""
+" Se si vogliono usare i nuovi driver, lo si \n"
+"      deve riavviare."
+
+#: doinst.sh:93
+msgid "Backup library: "
+msgstr "Backup della libreria: "
+
+#: doinst.sh:103
+msgid ""
+"NOTE: some library are been renamed to FGL.renamed.library_name.\\n      To "
+"remove this package, you can use:\\n\\n\\t\\taticonfig --uninstall\\n"
+"\\n      or, with the releases >= 11.3, with:\\n\\n\\t\\tati-driver-"
+"installer-<release>-<architecture>.run --uninstall"
+msgstr ""
+"NOTA: alcune librerie sono state rinominate in FGL.renamed.nome_libreria.\n"
+"      Per rimuovere questo pacchetto si può usare:\n"
+"\n"
+"              aticonfig --uninstall\n"
+"\n"
+"      oppure, con le versioni dei driver >= 11.3, con:\n"
+"\n"
+"            ati-driver-installer-<versione>-<architettura>.run --uninstall"

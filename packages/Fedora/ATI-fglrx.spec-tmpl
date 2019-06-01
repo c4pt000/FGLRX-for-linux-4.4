@@ -1,0 +1,505 @@
+%define	       debug_package	%{nil}
+%define        _x11dir          %{_prefix}/X11R6
+%define        _x11libdir       %{_x11dir}/%{_lib}
+%define        _x11includedir   %{_x11dir}/include
+
+%ifarch x86_64
+%define        _libdir32bit     %{_prefix}/lib
+%define        _moddir32bit     %{_prefix}/lib/dri
+%define        _x11moddir32bit  %{_prefix}/X11R6/lib/modules/dri
+%endif
+
+%define        _kmodver         %(echo `uname -r`)
+%define        _kmoddir         /lib/modules
+
+Name:          ATI-fglrx
+Version:       %ATI_DRIVER_VERSION
+Release:       %ATI_DRIVER_RELEASE.@RH_RELEASE_TAG@
+Summary:       %ATI_DRIVER_SUMMARY
+
+Group:         User Interface/X Hardware Support
+License:       BSD/Commercial/GPL/QPL
+URL:           %ATI_DRIVER_URL
+Source0:       ATI-fglrx-%ATI_DRIVER_VERSION.tar.gz
+BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Requires:      kernel-module-%{name}-%{_kmodver} = %{version}-%{release}
+Requires:      system-config-display
+
+Requires(post):   /sbin/ldconfig /sbin/chkconfig
+Requires(postun): /sbin/ldconfig /sbin/service
+Requires(preun):  /sbin/chkconfig /sbin/service
+
+Conflicts:     fglrx
+Conflicts:     fglrx-glc22
+Conflicts:     fglrx_4_3_0
+Conflicts:     fglrx_6_8_0
+
+Conflicts:     kernel-module-fglrx
+Conflicts:     ati-fglrx
+Conflicts:     ati-fglrx-devel
+Conflicts:     kmod-fglrx
+Conflicts:     xorg-x11-drv-fglrx
+Conflicts:     xorg-x11-drv-fglrx-devel
+
+Conflicts:     nvidia-glx
+Conflicts:     nvidia-glx-legacy
+Conflicts:     xorg-x11-drv-nvidia
+Conflicts:     xorg-x11-drv-nvidia-legacy
+
+ExclusiveArch: %{ix86} x86_64
+
+%description
+The display drivers for the ATI Radeon, Mobility Radeon, Radeon Xpress IGP, and 
+FireGL series of graphics graphics accelerators. This driver works only with post 
+R200 (Radeon 9200) graphics cards. This package provides 2D display drivers, 
+precompiled kernel modules, kernel module build environment, control 
+panel source code and hardware accelerated OpenGL.
+
+
+%package control-center
+Summary:       The Catalyst Control Center for the ATI proprietary graphics driver
+Group:         User Interface/X Hardware Support
+License:       BSD/Commercial/GPL/QPL
+
+Requires:      %{name} = %{version}-%{release}
+
+
+%description control-center
+The AMD Catalyst Control Center for ATI Radeon and FireGL graphics cards.
+
+%package devel
+Summary:       Development Files for the ATI proprietary graphics driver
+Group:         Development/Libraries
+License:       BSD/Commercial/GPL/QPL
+
+Requires:      %{name} = %{version}-%{release}
+Requires:      %{_includedir}/GL
+
+%description devel
+The development files and examples required for the ATI proprietary graphics 
+driver for ATI Radeon graphics cards. This includes ATI Radeon, Mobility Radeon, 
+Radeon Xpress IGP, and FireGL series of graphics graphics accelerators. 
+This driver works only with post R200 (Radeon 9200) graphics cards.
+
+%ifarch x86_64
+%package -n %{name}-IA32-libs
+Summary:       32 bit libraries for ATI's proprietary driver
+Group:         User Interface/X Hardware Support
+License:       BSD/Commercial/GPL/QPL
+
+Requires:      %{name} = %{version}-%{release}
+
+%description -n %{name}-IA32-libs
+The IA32 libraries required for the ATI proprietary graphics driver 
+for ATI Radeon graphics cards. This includes ATI Radeon, Mobility 
+Radeon, Radeon Xpress IGP, and FireGL series of graphics graphics accelerators. 
+This driver works only with post R200 (Radeon 9200) graphics cards.
+%endif
+
+%package -n kernel-module-%{name}-%{_kmodver}
+Summary:       The Linux kernel module for the ATI proprietary graphics driver
+Group:         System Environment/Kernel
+License:       BSD/Commercial/GPL/QPL
+
+%description -n kernel-module-%{name}-%{_kmodver}
+The Linux kernel module required by the ATI proprietary driver for ATI 
+Radeon graphics cards. This includes ATI Radeon, Mobility Radeon, Radeon Xpress IGP, 
+and FireGL series of graphics graphics accelerators. This driver works only with post 
+R200 (Radeon 9200) graphics cards.
+
+Provides:      kernel-module-ATI-fglrx = %{version}-%{release}
+Obsoletes:     kernel-module-ATI-fglrx < %{version}
+
+Requires:      /boot/vmlinuz-%{_kmodver}
+
+Requires(post):   /sbin/depmod
+Requires(postun): /sbin/depmod
+
+
+%prep
+%setup -D -T
+
+
+%build
+# Nope.
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+# Avoid disturbing Fedora Core/Red Hat Mesa packages
+%ifarch %{ix86}
+if [ -d %{_sysconfdir}/ld.so.conf.d ]; then
+  mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d
+  pushd $RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d
+  cat <<EOF > fglrx-x86.conf
+%{_libdir}/fglrx
+EOF
+  popd
+fi
+%endif
+
+%ifarch x86_64
+if [ -d %{_sysconfdir}/ld.so.conf.d ]; then
+  mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d
+  pushd $RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d
+  cat <<EOF > fglrx-x86_64.conf
+%{_libdir32bit}/fglrx
+%{_libdir}/fglrx
+EOF
+  popd
+fi
+%endif
+
+# Create a proper desktop file in the right location for Fedora Core
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
+pushd $RPM_BUILD_ROOT%{_datadir}/applications
+cat <<EOF > ati-controlcenter.desktop
+[Desktop Entry]
+Encoding=UTF-8
+Name=AMD Catalyst Control Center
+GenericName=AMD Catalyst Control Center
+Comment=The ATI Catalyst Control Center For Linux
+Exec=amdcccle
+Icon=ccc_large.xpm
+Terminal=false
+Type=Application
+Categories=Qt;Application;System;
+Version=%{version}
+EOF
+popd
+
+# Copy everything to the build root
+cp -pR $RPM_BUILD_DIR/%{name}-%{version}/* $RPM_BUILD_ROOT
+
+# Fix permissions for rpmlint
+find $RPM_BUILD_ROOT%{_docdir} -type f -perm 0555 -exec chmod 0644 '{}' \;
+find $RPM_BUILD_ROOT -type f -perm 0555 -exec chmod 0755 '{}' \;
+
+# Build the kernel module and install it
+export AS_USER=y
+pushd $RPM_BUILD_ROOT%{_kmoddir}/fglrx/build_mod
+bash make.sh verbose
+mkdir -p $RPM_BUILD_ROOT%{_kmoddir}/%{_kmodver}/extra
+install -D -m 0644 fglrx.ko $RPM_BUILD_ROOT%{_kmoddir}/%{_kmodver}/extra/fglrx/fglrx.ko
+rm -rf $RPM_BUILD_ROOT%{_kmoddir}/fglrx
+popd
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%preun
+if [ "$1" = 0 ]; then
+  /sbin/service atieventsd stop >/dev/null 2>&1
+  /sbin/chkconfig --del atieventsd
+  if [ "$(grep -s -e "^%{_libdir}/fglrx$" %{_sysconfdir}/ld.so.conf)" ]; then
+    sed -i -e '\/usr\/lib.*\/fglrx/d' %{_sysconfdir}/ld.so.conf
+  fi || :
+  /usr/bin/system-config-display --set-driver=vesa >/dev/null 2>&1
+fi
+
+%post
+if [ "$1" -eq 1 ]; then
+  if [ ! -d %{_sysconfdir}/ld.so.conf.d ]; then
+    if [ ! "$(grep -s -e "^%{_prefix}/lib/fglrx$" %{_sysconfdir}/ld.so.conf)" ]; then
+      cat %{_sysconfdir}/ld.so.conf > %{_sysconfdir}/ld.so.conf-ATI-backup-$$
+      echo "%{_libdir}/fglrx"|cat - %{_sysconfdir}/ld.so.conf > %{_sysconfdir}/ld.so.conf
+    fi
+  fi || :
+fi
+/sbin/ldconfig
+/sbin/chkconfig --add atieventsd
+/usr/bin/aticonfig --initial >/dev/null 2>&1
+
+%postun
+/sbin/ldconfig
+if [ "$1" -ge 1 ]; then
+    /sbin/service atieventsd condrestart >/dev/null 2>&1
+fi
+
+
+%ifarch x86_64
+%preun -n %{name}-IA32-libs
+if [ "$1" = 0 ]; then
+  if [ "$(grep -s -e "^%{_libdir}/fglrx$" %{_sysconfdir}/ld.so.conf)" ]; then
+    sed -i -e '\/usr\/lib\/fglrx/d' %{_sysconfdir}/ld.so.conf
+  fi || :
+fi
+/sbin/ldconfig
+
+%post -n %{name}-IA32-libs
+if [ "$1" -eq 1 ]; then
+  if [ ! -d %{_sysconfdir}/ld.so.conf.d ]; then
+    if [ ! "$(grep -s -e "^%{_prefix}/lib/fglrx$" %{_sysconfdir}/ld.so.conf)" ]; then
+      cat %{_sysconfdir}/ld.so.conf > %{_sysconfdir}/ld.so.conf-ATI-backup-$$
+      echo "%{_prefix}/lib/fglrx"|cat - %{_sysconfdir}/ld.so.conf > %{_sysconfdir}/ld.so.conf
+    fi
+  fi || :
+fi
+/sbin/ldconfig
+%endif
+
+
+%post -n kernel-module-%{name}-%{_kmodver}
+if [ -r /boot/System.map-%{_kmodver} ] ; then
+    /sbin/depmod -e -F /boot/System.map-%{_kmodver} %{_kmodver} > /dev/null || :
+fi
+
+%postun -n kernel-module-%{name}-%{_kmodver}
+if [ "$1" -ge 1 ]; then
+    if [ -r /boot/System.map-%{_kmodver} ] ; then
+        /sbin/depmod -e -F /boot/System.map-%{_kmodver} %{_kmodver} > /dev/null || :
+    fi
+fi
+
+
+%files
+%defattr(-,root,root,-)
+%doc %{_docdir}/%{name}-%{version}
+%dir %{_sysconfdir}/ati
+%dir %{_libdir}/fglrx
+%config(noreplace) %{_sysconfdir}/ati/control
+%config %{_sysconfdir}/ati/logo.xbm.example
+%config %{_sysconfdir}/ati/atiogl.xml
+%config %{_sysconfdir}/ati/amdpcsdb.default
+%config %{_sysconfdir}/ati/logo_mask.xbm.example
+%config %{_sysconfdir}/ld.so.conf.d/fglrx*.conf
+%config %{_sysconfdir}/acpi/events/*aticonfig.conf
+%{_sysconfdir}/acpi/actions/ati-powermode.sh
+%{_sysconfdir}/ati/authatieventsd.sh
+%{_sysconfdir}/ati/signature
+%{_initrddir}/atieventsd
+%{_sbindir}/atieventsd
+%{_sbindir}/amdnotifyui
+%{_sbindir}/atigetsysteminfo
+%{_bindir}/amdupdaterandrconfig
+%{_bindir}/amdxdg-su
+%{_bindir}/aticonfig
+%{_bindir}/atiodcli
+%{_bindir}/atiode
+%{_bindir}/fgl_glxgears
+%{_bindir}/fglrxinfo
+%{_bindir}/fglrx_xgamma
+@DRI_MODULE_DIR@/fglrx_dri.so
+@X11_MODULE_DIR@/drivers/*fglrx*.*
+@X11_MODULE_DIR@/linux/*fglrx*.*
+@X11_MODULE_DIR@/esut.a
+@X11_MODULE_DIR@/glesx.so
+@X11_MODULE_DIR@/amdxmm.so
+%{_libdir}/libati*.so
+%{_libdir}/fglrx/*.cap
+%{_libdir}/fglrx/*.so*
+%{_mandir}/man[1-9]/atieventsd.*
+# Workaround
+@ICD_PATH_BUG@
+
+%files control-center
+%defattr(-,root,root,-)
+%{_bindir}/amdcccle
+%{_datadir}/applications/ati-controlcenter.desktop
+%{_datadir}/pixmaps/ccc_large.xpm
+%{_datadir}/pixmaps/ccc_small.xpm
+%{_datadir}/ati/amdcccle/amdcccle_*.qm
+
+%files devel
+%defattr(-,root,root,-)
+%{_libdir}/fglrx/*.a
+%{_libdir}/fglrx/*.so
+%{_includedir}/GL/*ATI.h
+@X11_INCLUDE_DIR@/X11/extensions/fglrx*.h
+
+%ifarch x86_64
+%files -n %{name}-IA32-libs
+%defattr(-,root,root,-)
+%dir %{_libdir32bit}
+%{_libdir32bit}/fglrx/*.so.*
+@ICD_PATH_BUG_32@
+%endif
+
+%files -n kernel-module-%{name}-%{_kmodver}
+%defattr(-,root,root,-)
+%dir %{_kmoddir}/%{_kmodver}/extra/fglrx
+%{_kmoddir}/%{_kmodver}/extra/fglrx/*
+
+
+%changelog
+* Tue Mar 03 2009 Michael Larabel <Michael AT phoronix DOT com> 8.59.1-1
+- Change libamd*.so to libati*.so
+
+* Fri Dec 26 2008 Michael Larabel <Michael AT phoronix DOT com> 8.57.1-1
+- Add Fedora 10 support and fixes support for Fedora 9 on X.Org 7.4
+
+* Sat Nov 15 2008 Michael Larabel <Michael AT phoronix DOT com> 8.56.1-1
+- Update packaging scripts so they build properly with latest driver. Patch contributed by stevew.
+
+* Fri Sep 19 2008 Michael Larabel <Michael AT phoronix DOT com> 8.53.2-1
+- Update packaging scripts so they build properly with latest driver. Patch contributed by stevew.
+
+* Wed Jul 30 2008 Michael Larabel <Michael AT phoronix DOT com> 8.51.0-1
+- Update packaging scripts to handle atiode, atidxmm, atiodcli, etc.. Patch contributed by stevew.
+
+* Sat Mar 08 2008 Michael Larabel <Michael AT phoronix DOT com> 8.47.1-1
+- Add compat-libstdc++ as a required dependency
+
+* Sat Mar 08 2008 Michael Larabel <Michael AT phoronix DOT com> 8.47.1-1
+- Initial Fedora 9 support
+- Fix a fglrx_dri.so link
+
+* Thu Dec 20 2007 Michael Larabel <Michael AT phoronix DOT com> 8.44.3-1
+- Add support for amdpcsdb.default
+
+* Sun Oct 28 2007 Michael Larabel <Michael AT phoronix DOT com> 8.43.1-1
+- Fedora 8 debuginfo fix
+
+* Sat Aug 25 2007 Michael Larabel <Michael AT phoronix DOT com> 8.40.5-1
+- fglrx_dri.so makes a come back
+- Start work on Fedora 8 support
+
+* Thu Aug 23 2007 Michael Larabel <Michael AT phoronix DOT com> 8.40.4-1
+- Confirm the above scripts work with 8.41.4
+- The changelog hasn't been updated in a while
+
+* Sun Apr 01 2007 Michael Larabel <Michael AT phoronix DOT com> 8.36.3-1
+- Remove the 2.6.20 patch
+- Added support for esut.a and glesx.so
+
+* Thu Mar 15 2007 Michael Larabel <Michael AT phoronix DOT com> 8.35.3-1
+- Eliminate check for F7 when applying temporary 2.6.20 patch (so it will work on FC6 without any changes)
+
+* Sun Feb 25 2007 Michael Larabel <Michael AT phoronix DOT com> 8.35.3-1
+- Fedora 7 Test 2 updates
+
+* Tue Feb 13 2007 Michael Larabel <Michael AT phoronix DOT com> 8.35.2-1
+- control-panel RPM has been phased out and replaced by control-center for Fedora
+- Other needed RPM changes for amdcccle (Catalyst Control Center)
+- Remove fireglcontrolpanel (you can still build manually from source if desired)
+
+* Sun Feb 11 2007 Michael Larabel <Michael AT phoronix DOT com> 8.34.5-1
+- Confirm Fedora 7 changes working against Rawhide Feb 11. Ready for integration with 8.34.
+- RPM descriptions updated to reflect no R200 support
+
+* Sun Feb 04 2007 Michael Larabel <Michael AT phoronix DOT com> 8.34.5-1
+- Fedora 7 Changes
+
+* Fri Feb 02 2007 Michael Larabel <Michael AT phoronix DOT com> 8.34.5-1
+- Preliminary Fedora 7 support (needs more testing, and only works with Fedora 7 Test 1).
+- Simplified the statement that kernel-devel and kernel-headers is needed.
+- Add Kernel 2.6.20 patch.
+
+* Sun Jan 21 2007 Michael Larabel <Michael AT phoronix DOT com> 8.33.6-1
+- Remove atiogl_a_dri.so from RPM SPEC file and packaging script, since it now is removed in 8.34.
+- Add /etc/ati/control.
+
+* Fri Dec 15 2006 Michael Larabel <Michael AT phoronix DOT com> 8.32.5-1
+- Remove 2.6.19 kernel patch due to its inclusion in mainstream 8.33 firegl_public
+- Alert user of kernel-headers in addition to kernel-devel on FC6, if not installed
+- Switch from using system-config-display to using aticonfig --initial for configuration
+
+* Sun Oct 15 2006 Michael Larabel <Michael AT phoronix DOT com> 8.30.1-1
+- Updated fglrx locations
+- Remove 2.6.18 patch, since it's now included in the mainstream fglrx code
+- Support for Fedora Core 6 Pre
+
+* Sat Aug 05 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.28.3-1
+- began adding support for Fedora Core 6
+- tried to streamline the installer script a bit more
+
+* Tue Aug 01 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.28.3-1
+- update to 8.28.3 beta release
+- added atigetsysteminfo script
+- added a missing symlink in /usr/lib[64]/fglrx (libfglrx_tvout.so.1)
+
+* Wed Jul 26 2006  Niko Mirthes <nmirthes AT gmail DOT com> 8.27.10-1
+- update to 8.27.10 beta release
+
+* Mon Jul 24 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.6-1
+- realized there's no need to create a tarball
+- changed get_supported_packages in the packager script to detect Fedora Core or RHEL
+- forgot to increment the version-release in the changelog
+
+* Fri Jul 21 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.6-1
+- minor change to the /etc/ld.so.conf edit on RHEL 3 to avoid adding more than
+  one entry for the 64 bit OpenGL libs
+
+* Mon Jul 17 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.6-1
+- much build testing with Michael Larabel <Michael AT phoronix DOT com> on x86_64
+
+* Wed Jul 12 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.4-1
+- tried to handle RHEL 3's lack of /etc/ld.so.conf.d/ support
+
+* Mon Jul 10 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.4-1
+- began adding support for RHEL 3 and 4
+
+* Fri Jul 07 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.4-1
+- made the package build more correctly (BuildRoot works as expected)
+
+* Thu Jul 06 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.4-1
+- changed the way binaries and objects are stripped after looking
+  at Red Hat's XFree86.spec
+- minor tweaks to satisfy rpmlint to some extent
+
+* Wed Jul 05 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.4-1
+- added acpi POWERplay scripts
+- more testing on x86_64. Seems to build reliably
+
+* Tue Jul 04 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.4-1
+- changes and additions to the packager script and the spec template
+  to allow 64 bit packages to build
+- added a 32 bit OpenGL libraries package on 64 bit architectures
+- sent tarball to ATI beta list for comment and feedback
+
+* Sat Jul 01 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.4-1
+- simplified the spec to accommodate the move to generating
+  specs for each distro
+- move the file rearrangement section to the packager script
+
+* Fri Jun 30 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.27.4-1
+- change the driver in X config on install or remove
+- began moving toward generating a spec for each distro
+
+* Wed Jun 28 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.18-1
+- tried to make the kernel module package more compliant
+  with http://fedoraproject.org/wiki/Packaging/KernelModules
+- renamed kernel module package as per Livna repo naming practices
+- began work on Fedora Core 4 spec
+- minor tweaks for inclusion with the installer
+
+* Tue Jun 27 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.18-1
+- tweak authatieventsd.sh for Fedora Core (/var/gdm not /var/lib/gdm)
+
+* Mon Jun 26 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.18-1
+- created an init script and necessary spec scriptlets for
+  the ATI External Events Daemon
+
+* Sun Jun 25 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.11-1
+- stopped putting authatieventsd.sh in init until its purpose is clear
+- modified ati-packager.sh - everything is now self-contained. no more
+  use of /tmp, and creating the packages as a user *should* work fine
+- made the symlinks for the work around relative
+- make sure binaries and objects are getting stripped
+
+* Thu Jun 22 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.11-1
+- need to conditionalize things based on Fedora Core Extras guidelines
+- minor tweaks to Fedora Core 5 spec
+- began work on Fedora Core 3 spec
+
+* Sun Jun 18 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.11-1
+- made some changes as advised by mharris@redhat.com
+- added a fourth package (control panel package)
+- create a desktop file in a non-deprecated location
+
+* Wed Jun 14 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.6-1
+- split into three packages (kernel module/devel/the rest)
+- include source examples
+- move the dri modules to the prescribed location on Fedora Core 5
+- create symlinks so direct rendering works on Fedora Core 5
+
+* Mon Jun 12 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.6-1
+- started adding build/install requirements
+
+* Sun Jun 11 2006 Niko Mirthes <nmirthes AT gmail DOT com> 8.26.6-1
+- basic Fedora Core 5 monolithic package generated
+- need to further organize layout and scripts
